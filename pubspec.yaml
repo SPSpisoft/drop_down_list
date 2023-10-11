@@ -1,8 +1,8 @@
 name: sps_drop_down_list
 description: Customized drop_down_list (A drop down list with single and multiple selection that will work with search.)
-version: 0.0.5
-repository: https://github.com/Mindinventory/drop_down_list
-issue_tracker: https://github.com/Mindinventory/drop_down_list/issues
+version: 1.0.0
+repository: https://github.com/SPSpisoft/sps_drop_down_list
+issue_tracker: https://github.com/SPSpisoft/sps_drop_down_list/issues
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

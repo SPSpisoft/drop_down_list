@@ -1,3 +1,3 @@
-library drop_down_list;
+library sps_drop_down_list;
 
 export 'src/drop_down.dart';
