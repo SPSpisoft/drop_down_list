@@ -129,12 +129,12 @@ class _DropDownListExampleState extends State<DropDownListExample> {
             isCitySelected: true,
             cities: _listOfCities,
           ),
-          AppTextField(
-            textEditingController: _passwordTextEditingController,
-            title: kPassword,
-            hint: kAddYourPassword,
-            isCitySelected: false,
-          ),
+          // AppTextField(
+          //   textEditingController: _passwordTextEditingController,
+          //   title: kPassword,
+          //   hint: kAddYourPassword,
+          //   isCitySelected: false,
+          // ),
           const SizedBox(
             height: 15.0,
           ),
@@ -167,11 +167,14 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
+  int last = -1;
+
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
     DropDownState(
       DropDown(
         isDismissible: true,
+        isSearchVisible: false,
         bottomSheetTitle: const Text(
           kCities,
           style: TextStyle(
@@ -187,6 +190,13 @@ class _AppTextFieldState extends State<AppTextField> {
           ),
         ),
         data: widget.cities ?? [],
+        // listItemBuilder: (index) => InkWell(
+        //   onTap: () {
+        //     last = index;
+        //     FocusScope.of(context).unfocus();
+        //     Navigator.of(context).pop();
+        //   },
+        //     child: Text(widget.cities![index].name , style: TextStyle(color: (index == last) ? Colors.red : Colors.black87))),
         selectedItems: (List<dynamic> selectedList) {
           List<String> list = [];
           for (var item in selectedList) {
@@ -196,6 +206,9 @@ class _AppTextFieldState extends State<AppTextField> {
           }
           showSnackBar(list.toString());
         },
+        textStyle: TextStyle(color: Colors.red),
+        textStyleSelected: TextStyle(color: Colors.blue),
+        color: Colors.red,
         enableMultipleSelection: true,
       ),
     ).showModal(context);

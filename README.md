@@ -1,3 +1,9 @@
+
+# Customizes
+* add radiobutton(in singleSelect)
+* text style
+* color 
+
 # Dropdown List Choices
 Highly versatile Widget to search through a single or multiple choices from bottom sheet list in a dialog box or a menu.
 
