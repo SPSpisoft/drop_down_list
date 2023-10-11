@@ -1,6 +1,6 @@
-import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 
+import '../model/selected_list_item.dart';
 import 'app_text_field.dart';
 
 typedef SelectedItemsCallBack = Function(List<SelectedListItem> selectedItems);
