@@ -1,5 +1,5 @@
-name: drop_down_list
-description: A drop down list with single and multiple selection that will work with search.
+name: sps_drop_down_list
+description: Customized drop_down_list (A drop down list with single and multiple selection that will work with search.)
 version: 0.0.5
 repository: https://github.com/Mindinventory/drop_down_list
 issue_tracker: https://github.com/Mindinventory/drop_down_list/issues
