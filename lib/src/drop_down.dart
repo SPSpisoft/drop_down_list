@@ -22,6 +22,7 @@ class DropDown {
 
   /// This will give selection choice for single or multiple for list.
   final bool enableMultipleSelection;
+  final bool showDoneOnHeader;
 
   /// This gives the bottom sheet title.
   final Widget? bottomSheetTitle;
@@ -44,6 +45,8 @@ class DropDown {
   final TextStyle? textStyle;
 
   final TextStyle? textStyleSelected;
+
+  final Color? selectedColor;
 
   final Color? color;
 
@@ -68,6 +71,7 @@ class DropDown {
     this.selectedItems,
     this.listItemBuilder,
     this.enableMultipleSelection = false,
+    this.showDoneOnHeader = false,
     this.bottomSheetTitle,
     this.isDismissible = true,
     this.submitButtonChild,
@@ -78,6 +82,7 @@ class DropDown {
     this.color,
     this.textStyle,
     this.textStyleSelected,
+    this.selectedColor,
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
   });
@@ -133,14 +138,21 @@ class _MainBodyState extends State<MainBody> {
     _setSearchWidgetListener();
   }
 
+  double minHeight = 0.3;
+  double maxHeight = 0.7;
+  double initHeight = 0.3;
+
   @override
   Widget build(BuildContext context) {
+    initHeight = minHeight + 0.1 * mainList.length;
+    if (initHeight > maxHeight) initHeight = maxHeight;
+
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: widget.dropDown.bottomSheetListener,
       child: DraggableScrollableSheet(
-        initialChildSize: 0.7,
-        minChildSize: 0.13,
-        maxChildSize: 0.9,
+        initialChildSize: initHeight,
+        minChildSize: minHeight,
+        maxChildSize: maxHeight,
         expand: false,
         builder: (BuildContext context, ScrollController scrollController) {
           return Column(
@@ -157,7 +169,8 @@ class _MainBodyState extends State<MainBody> {
 
                     /// Done button
                     Visibility(
-                      visible: widget.dropDown.enableMultipleSelection,
+                      visible: widget.dropDown.enableMultipleSelection &&
+                          widget.dropDown.showDoneOnHeader,
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Material(
@@ -204,6 +217,7 @@ class _MainBodyState extends State<MainBody> {
                 child: ListView.builder(
                   controller: scrollController,
                   itemCount: mainList.length,
+                  shrinkWrap: true,
                   itemBuilder: (context, index) {
                     bool isSelected = mainList[index].isSelected ?? false;
                     return InkWell(
@@ -211,51 +225,83 @@ class _MainBodyState extends State<MainBody> {
                         color: widget.dropDown.dropDownBackgroundColor,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                          child: ListTile(
-                            title:
-                                widget.dropDown.listItemBuilder?.call(index) ??
-                                    Text(
-                                      mainList[index].name, style:
-                                    (mainList[index].isSelected?? false) ?
-                                    widget.dropDown.textStyleSelected?? widget.dropDown.textStyle?? myTextStyle :
-                                    widget.dropDown.textStyle?? myTextStyle,
-                                    ),
-                            trailing: widget.dropDown.enableMultipleSelection
-                                ? GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        mainList[index].isSelected =
-                                            !isSelected;
-                                      });
-                                    },
-                                    child: isSelected
-                                        ? Icon(Icons.check_box, color: widget.dropDown.color?? myControlColor,)
-                                        : Icon(
-                                            Icons.check_box_outline_blank, color: widget.dropDown.color?? myControlColor),
-                                  )
-                                : widget.dropDown.showRadioButton
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            for (var element in mainList) {
-                                              element.isSelected = false;
-                                            }
-                                            mainList[index].isSelected =
-                                                !isSelected;
-                                          });
-                                          widget.dropDown.selectedItems?.call([mainList[index]]);
-                                          _onUnFocusKeyboardAndPop();
-                                        },
-                                        child: isSelected
-                                            ? Icon(
-                                                Icons.radio_button_checked, color: widget.dropDown.color?? myControlColor,)
-                                            : Icon(
-                                                Icons.radio_button_off, color: widget.dropDown.color?? myControlColor),
-                                      )
-                                    : const SizedBox(
-                                        height: 0.0,
-                                        width: 0.0,
-                                      ),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (widget.dropDown.enableMultipleSelection) {
+                                  mainList[index].isSelected = !isSelected;
+                                } else {
+                                  for (var element in mainList) {
+                                    element.isSelected = false;
+                                  }
+                                  mainList[index].isSelected = !isSelected;
+                                  widget.dropDown.selectedItems
+                                      ?.call([mainList[index]]);
+                                  _onUnFocusKeyboardAndPop();
+                                }
+                              });
+                            },
+                            child: ListTile(
+                              title: widget.dropDown.listItemBuilder
+                                      ?.call(index) ??
+                                  // (widget.dropDown.textMarquee ?
+                                  // Marquee(
+                                  //   text: mainList[index].name,
+                                  //   style:
+                                  //   (mainList[index].isSelected?? false) ?
+                                  //   widget.dropDown.textStyleSelected?? widget.dropDown.textStyle?? myTextStyle :
+                                  //   widget.dropDown.textStyle?? myTextStyle,
+                                  //   scrollAxis: Axis.horizontal,
+                                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                                  //   blankSpace: 20.0,
+                                  //   velocity: 100.0,
+                                  //   pauseAfterRound: Duration(seconds: 1),
+                                  //   startPadding: 10.0,
+                                  //   accelerationDuration: Duration(seconds: 1),
+                                  //   accelerationCurve: Curves.linear,
+                                  //   decelerationDuration: Duration(milliseconds: 500),
+                                  //   decelerationCurve: Curves.easeOut,
+                                  // )      ,
+                                  // :
+                                  Text(
+                                    mainList[index].name,
+                                    style: (mainList[index].isSelected ?? false)
+                                        ? widget.dropDown.textStyleSelected ??
+                                            widget.dropDown.textStyle ??
+                                            myTextStyle
+                                        : widget.dropDown.textStyle ??
+                                            myTextStyle,
+                                  ),
+                              // ),
+                              trailing: widget.dropDown.enableMultipleSelection
+                                  ? isSelected
+                                      ? Icon(
+                                          Icons.check_box,
+                                          color:
+                                              widget.dropDown.selectedColor ??
+                                                  widget.dropDown.color ??
+                                                  myControlColor,
+                                        )
+                                      : Icon(Icons.check_box_outline_blank,
+                                          color: widget.dropDown.color ??
+                                              myControlColor)
+                                  : widget.dropDown.showRadioButton
+                                      ? isSelected
+                                          ? Icon(
+                                              Icons.radio_button_checked,
+                                              color: widget
+                                                      .dropDown.selectedColor ??
+                                                  widget.dropDown.color ??
+                                                  myControlColor,
+                                            )
+                                          : Icon(Icons.radio_button_off,
+                                              color: widget.dropDown.color ??
+                                                  myControlColor)
+                                      : const SizedBox(
+                                          height: 0.0,
+                                          width: 0.0,
+                                        ),
+                            ),
                           ),
                         ),
                       ),
@@ -268,13 +314,45 @@ class _MainBodyState extends State<MainBody> {
                                 }
                                 mainList[index].isSelected = !isSelected;
                               });
-                              widget.dropDown.selectedItems?.call([mainList[index]]);
+                              widget.dropDown.selectedItems
+                                  ?.call([mainList[index]]);
                               _onUnFocusKeyboardAndPop();
                             },
                     );
                   },
                 ),
               ),
+
+              Visibility(
+                visible: widget.dropDown.enableMultipleSelection &&
+                    !widget.dropDown.showDoneOnHeader,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Material(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          List<SelectedListItem> selectedList = widget
+                              .dropDown.data
+                              .where((element) => element.isSelected ?? false)
+                              .toList();
+                          List<SelectedListItem> selectedNameList = [];
+
+                          for (var element in selectedList) {
+                            selectedNameList.add(element);
+                          }
+
+                          widget.dropDown.selectedItems?.call(selectedNameList);
+                          _onUnFocusKeyboardAndPop();
+                        },
+                        child: widget.dropDown.submitButtonChild ??
+                            const Text('Done'),
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           );
         },

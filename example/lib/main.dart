@@ -91,37 +91,37 @@ class _DropDownListExampleState extends State<DropDownListExample> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 30.0,
-          ),
-          const Text(
-            kRegister,
-            style: TextStyle(
-              fontSize: 34.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(
-            height: 15.0,
-          ),
-          AppTextField(
-            textEditingController: _fullNameTextEditingController,
-            title: kFullName,
-            hint: kEnterYourName,
-            isCitySelected: false,
-          ),
-          AppTextField(
-            textEditingController: _emailTextEditingController,
-            title: kEmail,
-            hint: kEnterYourEmail,
-            isCitySelected: false,
-          ),
-          AppTextField(
-            textEditingController: _phoneNumberTextEditingController,
-            title: kPhoneNumber,
-            hint: kEnterYourPhoneNumber,
-            isCitySelected: false,
-          ),
+          // const SizedBox(
+          //   height: 30.0,
+          // ),
+          // const Text(
+          //   kRegister,
+          //   style: TextStyle(
+          //     fontSize: 34.0,
+          //     fontWeight: FontWeight.bold,
+          //   ),
+          // ),
+          // const SizedBox(
+          //   height: 15.0,
+          // ),
+          // AppTextField(
+          //   textEditingController: _fullNameTextEditingController,
+          //   title: kFullName,
+          //   hint: kEnterYourName,
+          //   isCitySelected: false,
+          // ),
+          // AppTextField(
+          //   textEditingController: _emailTextEditingController,
+          //   title: kEmail,
+          //   hint: kEnterYourEmail,
+          //   isCitySelected: false,
+          // ),
+          // AppTextField(
+          //   textEditingController: _phoneNumberTextEditingController,
+          //   title: kPhoneNumber,
+          //   hint: kEnterYourPhoneNumber,
+          //   isCitySelected: false,
+          // ),
           AppTextField(
             textEditingController: _cityTextEditingController,
             title: kCity,
@@ -175,18 +175,24 @@ class _AppTextFieldState extends State<AppTextField> {
       DropDown(
         isDismissible: true,
         isSearchVisible: false,
-        bottomSheetTitle: const Text(
-          kCities,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
+        bottomSheetTitle: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: const Text(
+            kCities,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
           ),
         ),
-        submitButtonChild: const Text(
-          'Done',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+        // showRadioButton: false,
+        submitButtonChild:  Center(
+          child: Text(
+            'Done',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         data: widget.cities ?? [],
@@ -208,8 +214,10 @@ class _AppTextFieldState extends State<AppTextField> {
         },
         textStyle: TextStyle(color: Colors.red),
         textStyleSelected: TextStyle(color: Colors.blue),
+        selectedColor: Colors.blue,
         color: Colors.red,
-        enableMultipleSelection: true,
+        enableMultipleSelection: false,
+        // listItemBuilder: (index) => Text(widget.cities![index].name),
       ),
     ).showModal(context);
   }
@@ -229,6 +237,8 @@ class _AppTextFieldState extends State<AppTextField> {
           height: 5.0,
         ),
         TextFormField(
+          // readOnly: true,
+          // showCursor: true,
           controller: widget.textEditingController,
           cursorColor: Colors.black,
           onTap: widget.isCitySelected
