@@ -61,6 +61,8 @@ class DropDown {
   /// If true, the bottom sheet will be dismissed when user taps on the scrim.
   /// by default it is [True].
   final bool isDismissible;
+  final bool fromSide;
+  final double? widthSide;
 
   /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
   final BottomSheetListener? bottomSheetListener;
@@ -79,6 +81,8 @@ class DropDown {
     this.searchHintText = 'Search',
     this.isSearchVisible = true,
     this.showRadioButton = true,
+    this.fromSide = false,
+    this.widthSide,
     this.color,
     this.textStyle,
     this.textStyleSelected,
@@ -97,6 +101,7 @@ class DropDownState {
   void showModal(context) {
     showModalBottomSheet(
       isScrollControlled: true,
+      backgroundColor: dropDown.fromSide ? Colors.transparent : dropDown.dropDownBackgroundColor,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,
       shape: const RoundedRectangleBorder(
@@ -106,7 +111,29 @@ class DropDownState {
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return MainBody(dropDown: dropDown);
+            return dropDown.fromSide ?
+                Row(
+                  // alignment: Alignment.topRight,
+                  children: [
+                    Expanded(child: InkWell(
+                      onTap: (){
+                        if(dropDown.isDismissible){
+                          Navigator.maybePop(context);
+                        }
+                      },
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
+                    )),
+                    Container(
+                      width: dropDown.widthSide?? MediaQuery.of(context).size.width/2,
+                      height: double.infinity,
+                      decoration: BoxDecoration(color: dropDown.dropDownBackgroundColor, borderRadius: BorderRadius.horizontal(left:  Radius.circular(15.0)),),
+                      child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide),
+                    ),
+                  ],
+                )
+            : MainBody(dropDown: dropDown, fromSide: dropDown.fromSide);
           },
         );
       },
@@ -117,8 +144,9 @@ class DropDownState {
 /// This is main class to display the bottom sheet body.
 class MainBody extends StatefulWidget {
   final DropDown dropDown;
+  final bool fromSide;
 
-  const MainBody({required this.dropDown, Key? key}) : super(key: key);
+  const MainBody({required this.dropDown, required this.fromSide, Key? key}) : super(key: key);
 
   @override
   State<MainBody> createState() => _MainBodyState();
@@ -131,16 +159,18 @@ class _MainBodyState extends State<MainBody> {
   Color myControlColor = Colors.black87;
   TextStyle myTextStyle = const TextStyle(fontSize: 15, color: Colors.black87);
 
+  double minHeight = 0.7;
+  double maxHeight = 0.7;
+  double initHeight = 0.3;
+
   @override
   void initState() {
     super.initState();
     mainList = widget.dropDown.data;
+    maxHeight = widget.fromSide? 1 :0.7;
+    minHeight = widget.fromSide? 1 :0.7;
     _setSearchWidgetListener();
   }
-
-  double minHeight = 0.3;
-  double maxHeight = 0.7;
-  double initHeight = 0.3;
 
   @override
   Widget build(BuildContext context) {
