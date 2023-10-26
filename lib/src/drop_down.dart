@@ -134,7 +134,7 @@ class DropDownState {
                       height: double.infinity,
                       decoration: BoxDecoration(color: dropDown.dropDownBackgroundColor, borderRadius: BorderRadius.horizontal(left:  Radius.circular(15.0)),),
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(bottom: 10),
                         child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide),
                       ),
                     ),
