@@ -63,9 +63,11 @@ class DropDown {
   final bool isDismissible;
   final bool fromSide;
   final double? widthSide;
+  EdgeInsetsGeometry? margin;
 
   /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
   final BottomSheetListener? bottomSheetListener;
+
 
   DropDown({
     Key? key,
@@ -83,6 +85,7 @@ class DropDown {
     this.showRadioButton = true,
     this.fromSide = false,
     this.widthSide,
+    this.margin,
     this.color,
     this.textStyle,
     this.textStyleSelected,
@@ -126,10 +129,14 @@ class DropDownState {
                       ),
                     )),
                     Container(
+                      margin: dropDown.margin,
                       width: dropDown.widthSide?? MediaQuery.of(context).size.width/2,
                       height: double.infinity,
                       decoration: BoxDecoration(color: dropDown.dropDownBackgroundColor, borderRadius: BorderRadius.horizontal(left:  Radius.circular(15.0)),),
-                      child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide),
+                      ),
                     ),
                   ],
                 )
@@ -159,7 +166,7 @@ class _MainBodyState extends State<MainBody> {
   Color myControlColor = Colors.black87;
   TextStyle myTextStyle = const TextStyle(fontSize: 15, color: Colors.black87);
 
-  double minHeight = 0.7;
+  double minHeight = 0.2;
   double maxHeight = 0.7;
   double initHeight = 0.3;
 
@@ -168,7 +175,7 @@ class _MainBodyState extends State<MainBody> {
     super.initState();
     mainList = widget.dropDown.data;
     maxHeight = widget.fromSide? 1 :0.7;
-    minHeight = widget.fromSide? 1 :0.7;
+    minHeight = widget.fromSide? 1 :0.2;
     _setSearchWidgetListener();
   }
 

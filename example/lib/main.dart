@@ -175,6 +175,7 @@ class _AppTextFieldState extends State<AppTextField> {
       DropDown(
         isDismissible: true,
         isSearchVisible: true,
+        margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
         fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
         dropDownBackgroundColor: Colors.white,
         bottomSheetTitle: Padding(

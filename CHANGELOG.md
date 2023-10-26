@@ -1,4 +1,6 @@
 ## 1.2.0
+* add margin
+## 1.2.0
 * open in side
 ## 1.1.1
 
