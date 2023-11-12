@@ -29,6 +29,10 @@ class DropDown {
 
   /// You can set your custom submit button when the multiple selection is enabled.
   final Widget? submitButtonChild;
+  final int? submitButtonFlex;
+  final Widget? cancelButtonChild;
+
+  final EdgeInsets? buttonPadding;
 
   /// [searchWidget] is use to show the text box for the searching.
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
@@ -68,7 +72,6 @@ class DropDown {
   /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
   final BottomSheetListener? bottomSheetListener;
 
-
   DropDown({
     Key? key,
     required this.data,
@@ -79,6 +82,9 @@ class DropDown {
     this.bottomSheetTitle,
     this.isDismissible = true,
     this.submitButtonChild,
+    this.submitButtonFlex,
+    this.cancelButtonChild,
+    this.buttonPadding,
     this.searchWidget,
     this.searchHintText = 'Search',
     this.isSearchVisible = true,
@@ -364,27 +370,56 @@ class _MainBodyState extends State<MainBody> {
                 visible: widget.dropDown.enableMultipleSelection &&
                     !widget.dropDown.showDoneOnHeader,
                 child: Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.bottomCenter,
                   child: Material(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          List<SelectedListItem> selectedList = widget
-                              .dropDown.data
-                              .where((element) => element.isSelected ?? false)
-                              .toList();
-                          List<SelectedListItem> selectedNameList = [];
+                      padding: widget.dropDown.buttonPadding ?? const EdgeInsets.all(25.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
 
-                          for (var element in selectedList) {
-                            selectedNameList.add(element);
-                          }
+                          widget.dropDown.cancelButtonChild != null ?
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MaterialButton(
+                                color: Colors.grey,
+                                onPressed: () {
+                                  _onUnFocusKeyboardAndPop();
+                                },
+                                child: widget.dropDown.cancelButtonChild ??
+                                    const Text('Cancel'),
+                              ),
+                            ),
+                          ) : SizedBox(),
+                          Expanded(
+                            flex: widget.dropDown.submitButtonFlex ?? 2,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  List<SelectedListItem> selectedList = widget
+                                      .dropDown.data
+                                      .where((element) => element.isSelected ?? false)
+                                      .toList();
+                                  List<SelectedListItem> selectedNameList = [];
 
-                          widget.dropDown.selectedItems?.call(selectedNameList);
-                          _onUnFocusKeyboardAndPop();
-                        },
-                        child: widget.dropDown.submitButtonChild ??
-                            const Text('Done'),
+                                  for (var element in selectedList) {
+                                    selectedNameList.add(element);
+                                  }
+
+                                  widget.dropDown.selectedItems?.call(selectedNameList);
+                                  _onUnFocusKeyboardAndPop();
+                                },
+                                child: widget.dropDown.submitButtonChild ??
+                                    const Text('Done'),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

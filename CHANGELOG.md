@@ -1,3 +1,5 @@
+## 1.2.3
+* add cancel button & padding
 ## 1.2.0
 * add margin
 ## 1.2.0

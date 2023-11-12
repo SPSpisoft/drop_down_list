@@ -198,6 +198,7 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
           ),
         ),
+        cancelButtonChild: Text("Cancel", style: TextStyle(color: Colors.white)),
         data: widget.cities ?? [],
         // listItemBuilder: (index) => InkWell(
         //   onTap: () {
@@ -219,7 +220,7 @@ class _AppTextFieldState extends State<AppTextField> {
         textStyleSelected: TextStyle(color: Colors.blue),
         selectedColor: Colors.blue,
         color: Colors.red,
-        enableMultipleSelection: false,
+        enableMultipleSelection: true,
         // listItemBuilder: (index) => Text(widget.cities![index].name),
       ),
     ).showModal(context);
