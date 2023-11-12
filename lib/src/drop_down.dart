@@ -118,36 +118,38 @@ class DropDownState {
       ),
       context: context,
       builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return dropDown.fromSide ?
-                Row(
-                  // alignment: Alignment.topRight,
-                  children: [
-                    Expanded(child: InkWell(
-                      onTap: (){
-                        if(dropDown.isDismissible){
-                          Navigator.maybePop(context);
-                        }
-                      },
-                      child: Container(
-                        color: Colors.transparent,
+        return SafeArea(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return dropDown.fromSide ?
+                  Row(
+                    // alignment: Alignment.topRight,
+                    children: [
+                      Expanded(child: InkWell(
+                        onTap: (){
+                          if(dropDown.isDismissible){
+                            Navigator.maybePop(context);
+                          }
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                        ),
+                      )),
+                      Container(
+                        margin: dropDown.margin,
+                        width: dropDown.widthSide?? MediaQuery.of(context).size.width/2,
+                        height: double.infinity,
+                        decoration: BoxDecoration(color: dropDown.dropDownBackgroundColor, borderRadius: BorderRadius.horizontal(left:  Radius.circular(15.0)),),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide),
+                        ),
                       ),
-                    )),
-                    Container(
-                      margin: dropDown.margin,
-                      width: dropDown.widthSide?? MediaQuery.of(context).size.width/2,
-                      height: double.infinity,
-                      decoration: BoxDecoration(color: dropDown.dropDownBackgroundColor, borderRadius: BorderRadius.horizontal(left:  Radius.circular(15.0)),),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide),
-                      ),
-                    ),
-                  ],
-                )
-            : MainBody(dropDown: dropDown, fromSide: dropDown.fromSide);
-          },
+                    ],
+                  )
+              : MainBody(dropDown: dropDown, fromSide: dropDown.fromSide);
+            },
+          ),
         );
       },
     );
