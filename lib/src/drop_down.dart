@@ -174,16 +174,16 @@ class _MainBodyState extends State<MainBody> {
   Color myControlColor = Colors.black87;
   TextStyle myTextStyle = const TextStyle(fontSize: 15, color: Colors.black87);
 
-  double minHeight = 0.2;
+  double minHeight = 0.3;
   double maxHeight = 0.7;
-  double initHeight = 0.3;
+  double initHeight = 0.4;
 
   @override
   void initState() {
     super.initState();
     mainList = widget.dropDown.data;
     maxHeight = widget.fromSide? 1 :0.7;
-    minHeight = widget.fromSide? 1 :0.2;
+    minHeight = widget.fromSide? 1 :0.3;
     _setSearchWidgetListener();
   }
 
