@@ -1,4 +1,6 @@
 ## 1.2.5
+* change cancel button
+## 1.2.5
 * min height change
 ## 1.2.4
 * add safe area

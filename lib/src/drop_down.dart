@@ -381,21 +381,10 @@ class _MainBodyState extends State<MainBody> {
                         // crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-
                           widget.dropDown.cancelButtonChild != null ?
                           Expanded(
                             flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MaterialButton(
-                                color: Colors.grey,
-                                onPressed: () {
-                                  _onUnFocusKeyboardAndPop();
-                                },
-                                child: widget.dropDown.cancelButtonChild ??
-                                    const Text('Cancel'),
-                              ),
-                            ),
+                            child: widget.dropDown.cancelButtonChild!,
                           ) : SizedBox(),
                           Expanded(
                             flex: widget.dropDown.submitButtonFlex ?? 2,
