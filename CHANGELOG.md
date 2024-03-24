@@ -1,4 +1,6 @@
-## 1.2.5
+## 1.2.7
+* change design fromSide & submitButton
+* ## 1.2.6
 * change cancel button
 ## 1.2.5
 * min height change

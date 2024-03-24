@@ -189,15 +189,15 @@ class _AppTextFieldState extends State<AppTextField> {
           ),
         ),
         // showRadioButton: false,
-        submitButtonChild:  Center(
-          child: Text(
-            'Done',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        // submitButtonChild:  Center(
+        //   child: Text(
+        //     'Done000',
+        //     style: TextStyle(
+        //       fontSize: 16,
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        // ),
         cancelButtonChild: Text("Cancel", style: TextStyle(color: Colors.white)),
         data: widget.cities ?? [],
         // listItemBuilder: (index) => InkWell(

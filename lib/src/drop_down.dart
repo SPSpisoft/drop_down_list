@@ -218,27 +218,30 @@ class _MainBodyState extends State<MainBody> {
                           widget.dropDown.showDoneOnHeader,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: Material(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              List<SelectedListItem> selectedList = widget
-                                  .dropDown.data
-                                  .where(
-                                      (element) => element.isSelected ?? false)
-                                  .toList();
-                              List<SelectedListItem> selectedNameList = [];
+                        child:
+                        widget.dropDown.submitButtonChild??
+                            MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              side: const BorderSide(color: Colors.transparent, width: 0)),
+                          color: Colors.green.shade300,
+                          onPressed: () {
+                            List<SelectedListItem> selectedList = widget
+                                .dropDown.data
+                                .where(
+                                    (element) => element.isSelected ?? false)
+                                .toList();
+                            List<SelectedListItem> selectedNameList = [];
 
-                              for (var element in selectedList) {
-                                selectedNameList.add(element);
-                              }
+                            for (var element in selectedList) {
+                              selectedNameList.add(element);
+                            }
 
-                              widget.dropDown.selectedItems
-                                  ?.call(selectedNameList);
-                              _onUnFocusKeyboardAndPop();
-                            },
-                            child: widget.dropDown.submitButtonChild ??
-                                const Text('Done'),
-                          ),
+                            widget.dropDown.selectedItems
+                                ?.call(selectedNameList);
+                            _onUnFocusKeyboardAndPop();
+                          },
+                          child: const Text('Done'),
                         ),
                       ),
                     ),
@@ -373,45 +376,44 @@ class _MainBodyState extends State<MainBody> {
                     !widget.dropDown.showDoneOnHeader,
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Material(
-                    child: Padding(
-                      padding: widget.dropDown.buttonPadding ?? const EdgeInsets.all(25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          widget.dropDown.cancelButtonChild != null ?
-                          Expanded(
-                            flex: 1,
-                            child: widget.dropDown.cancelButtonChild!,
-                          ) : SizedBox(),
-                          Expanded(
-                            flex: widget.dropDown.submitButtonFlex ?? 2,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  List<SelectedListItem> selectedList = widget
-                                      .dropDown.data
-                                      .where((element) => element.isSelected ?? false)
-                                      .toList();
-                                  List<SelectedListItem> selectedNameList = [];
+                  child: Padding(
+                    padding: widget.dropDown.buttonPadding ?? const EdgeInsets.only(right: 15, left: 15, top: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        widget.dropDown.cancelButtonChild != null ?
+                        Expanded(
+                          flex: 1,
+                          child: widget.dropDown.cancelButtonChild!,
+                        ) : SizedBox(),
+                        Expanded(
+                          flex: widget.dropDown.submitButtonFlex ?? 2,
+                          child: widget.dropDown.submitButtonChild??
+                              MaterialButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    side: const BorderSide(color: Colors.transparent, width: 0)),
+                                color: Colors.green.shade500,
+                                  onPressed: () {
+                                    List<SelectedListItem> selectedList = widget
+                                        .dropDown.data
+                                        .where((element) => element.isSelected ?? false)
+                                        .toList();
+                                    List<SelectedListItem> selectedNameList = [];
 
-                                  for (var element in selectedList) {
-                                    selectedNameList.add(element);
-                                  }
+                                    for (var element in selectedList) {
+                                      selectedNameList.add(element);
+                                    }
 
-                                  widget.dropDown.selectedItems?.call(selectedNameList);
-                                  _onUnFocusKeyboardAndPop();
-                                },
-                                child: widget.dropDown.submitButtonChild ??
-                                    const Text('Done'),
+                                    widget.dropDown.selectedItems?.call(selectedNameList);
+                                    _onUnFocusKeyboardAndPop();
+                                  },
+                                child: const Text('Done', style: TextStyle(color: Colors.white)),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
