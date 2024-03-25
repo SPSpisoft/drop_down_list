@@ -113,6 +113,7 @@ class DropDownState {
       backgroundColor: dropDown.fromSide ? Colors.transparent : dropDown.dropDownBackgroundColor,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,
+      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
       ),

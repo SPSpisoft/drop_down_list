@@ -1,3 +1,5 @@
+## 1.2.8
+* debug landscape
 ## 1.2.7
 * change design fromSide & submitButton
 * ## 1.2.6
