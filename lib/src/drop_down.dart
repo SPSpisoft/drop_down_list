@@ -66,6 +66,7 @@ class DropDown {
   /// by default it is [True].
   final bool isDismissible;
   final bool fromSide;
+  final bool noCloseDialog;
   final double? widthSide;
   EdgeInsetsGeometry? margin;
 
@@ -98,6 +99,7 @@ class DropDown {
     this.selectedColor,
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
+    this.noCloseDialog = false,
   });
 }
 
@@ -143,12 +145,12 @@ class DropDownState {
                         decoration: BoxDecoration(color: dropDown.dropDownBackgroundColor, borderRadius: BorderRadius.horizontal(left:  Radius.circular(15.0)),),
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 10),
-                          child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide),
+                          child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide, noCloseDialog: dropDown.noCloseDialog),
                         ),
                       ),
                     ],
                   )
-              : MainBody(dropDown: dropDown, fromSide: dropDown.fromSide);
+              : MainBody(dropDown: dropDown, fromSide: dropDown.fromSide, noCloseDialog: dropDown.noCloseDialog);
             },
           ),
         );
@@ -162,7 +164,9 @@ class MainBody extends StatefulWidget {
   final DropDown dropDown;
   final bool fromSide;
 
-  const MainBody({required this.dropDown, required this.fromSide, Key? key}) : super(key: key);
+  bool? noCloseDialog = false;
+
+  MainBody({required this.dropDown, required this.fromSide, this.noCloseDialog,  Key? key}) : super(key: key);
 
   @override
   State<MainBody> createState() => _MainBodyState();
@@ -286,7 +290,9 @@ class _MainBodyState extends State<MainBody> {
                                   mainList[index].isSelected = !isSelected;
                                   widget.dropDown.selectedItems
                                       ?.call([mainList[index]]);
-                                  _onUnFocusKeyboardAndPop();
+                                  if(!widget.noCloseDialog!) {
+                                    _onUnFocusKeyboardAndPop();
+                                  }
                                 }
                               });
                             },

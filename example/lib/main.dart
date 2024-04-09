@@ -220,7 +220,8 @@ class _AppTextFieldState extends State<AppTextField> {
         textStyleSelected: TextStyle(color: Colors.blue),
         selectedColor: Colors.blue,
         color: Colors.red,
-        enableMultipleSelection: true,
+        enableMultipleSelection: false,
+        noCloseDialog: true,
         // listItemBuilder: (index) => Text(widget.cities![index].name),
       ),
     ).showModal(context);

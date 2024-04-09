@@ -1,3 +1,5 @@
+## 1.2.9
+* add noCloseDialog
 ## 1.2.8
 * debug landscape
 ## 1.2.7
