@@ -1,3 +1,5 @@
+## 1.2.10
+* remove not show done in single
 ## 1.2.9
 * add noCloseDialog
 ## 1.2.8

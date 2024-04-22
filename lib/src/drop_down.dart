@@ -219,7 +219,8 @@ class _MainBodyState extends State<MainBody> {
 
                     /// Done button
                     Visibility(
-                      visible: widget.dropDown.enableMultipleSelection &&
+                      visible:
+                      // widget.dropDown.enableMultipleSelection &&
                           widget.dropDown.showDoneOnHeader,
                       child: Align(
                         alignment: Alignment.centerRight,
@@ -379,7 +380,8 @@ class _MainBodyState extends State<MainBody> {
               ),
 
               Visibility(
-                visible: widget.dropDown.enableMultipleSelection &&
+                visible:
+                // widget.dropDown.enableMultipleSelection &&
                     !widget.dropDown.showDoneOnHeader,
                 child: Align(
                   alignment: Alignment.bottomCenter,
