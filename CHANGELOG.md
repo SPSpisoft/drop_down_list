@@ -1,4 +1,8 @@
-## 1.2.10
+## 1.3.0
+* add numerical
+## 1.2.11
+* set callback to MultiSelect
+* ## 1.2.10
 * remove not show done in single
 ## 1.2.9
 * add noCloseDialog

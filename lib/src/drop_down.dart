@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../model/selected_list_item.dart';
@@ -60,6 +61,8 @@ class DropDown {
   /// [searchHintText] is use to show the hint text into the search widget.
   /// by default it is [Search] text.
   final String? searchHintText;
+  final String? labelText;
+  final String? hintText;
 
   /// [isDismissible] Specifies whether the bottom sheet will be dismissed when user taps on the scrim.
   /// If true, the bottom sheet will be dismissed when user taps on the scrim.
@@ -68,16 +71,26 @@ class DropDown {
   final bool fromSide;
   final bool noCloseDialog;
   final double? widthSide;
+
+
   EdgeInsetsGeometry? margin;
+
+  final Widget? customTopWidget;
 
   /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
   final BottomSheetListener? bottomSheetListener;
+
+  Widget? inputDescriptionWidget;
 
   DropDown({
     Key? key,
     required this.data,
     this.selectedItems,
+    this.customTopWidget,
     this.listItemBuilder,
+    this.hintText,
+    this.labelText,
+    this.inputDescriptionWidget,
     this.enableMultipleSelection = false,
     this.showDoneOnHeader = false,
     this.bottomSheetTitle,
@@ -112,7 +125,9 @@ class DropDownState {
   void showModal(context) {
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: dropDown.fromSide ? Colors.transparent : dropDown.dropDownBackgroundColor,
+      backgroundColor: dropDown.fromSide
+          ? Colors.transparent
+          : dropDown.dropDownBackgroundColor,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
@@ -124,33 +139,45 @@ class DropDownState {
         return SafeArea(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return dropDown.fromSide ?
-                  Row(
-                    // alignment: Alignment.topRight,
-                    children: [
-                      Expanded(child: InkWell(
-                        onTap: (){
-                          if(dropDown.isDismissible){
-                            Navigator.maybePop(context);
-                          }
-                        },
-                        child: Container(
-                          color: Colors.transparent,
+              return dropDown.fromSide
+                  ? Row(
+                      // alignment: Alignment.topRight,
+                      children: [
+                        Expanded(
+                            child: InkWell(
+                          onTap: () {
+                            if (dropDown.isDismissible) {
+                              Navigator.maybePop(context);
+                            }
+                          },
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
+                        )),
+                        Container(
+                          margin: dropDown.margin,
+                          width: dropDown.widthSide ??
+                              MediaQuery.of(context).size.width / 2,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                            color: dropDown.dropDownBackgroundColor,
+                            borderRadius: const BorderRadius.horizontal(
+                                left: Radius.circular(15.0)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child:  MainBody(
+                                    dropDown: dropDown,
+                                    fromSide: dropDown.fromSide,
+                                    noCloseDialog: dropDown.noCloseDialog),
+                          ),
                         ),
-                      )),
-                      Container(
-                        margin: dropDown.margin,
-                        width: dropDown.widthSide?? MediaQuery.of(context).size.width/2,
-                        height: double.infinity,
-                        decoration: BoxDecoration(color: dropDown.dropDownBackgroundColor, borderRadius: BorderRadius.horizontal(left:  Radius.circular(15.0)),),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: MainBody(dropDown: dropDown, fromSide: dropDown.fromSide, noCloseDialog: dropDown.noCloseDialog),
-                        ),
-                      ),
-                    ],
-                  )
-              : MainBody(dropDown: dropDown, fromSide: dropDown.fromSide, noCloseDialog: dropDown.noCloseDialog);
+                      ],
+                    )
+                  :  MainBody(
+                          dropDown: dropDown,
+                          fromSide: dropDown.fromSide,
+                          noCloseDialog: dropDown.noCloseDialog);
             },
           ),
         );
@@ -163,10 +190,14 @@ class DropDownState {
 class MainBody extends StatefulWidget {
   final DropDown dropDown;
   final bool fromSide;
+  final bool? noCloseDialog;
 
-  bool? noCloseDialog = false;
-
-  MainBody({required this.dropDown, required this.fromSide, this.noCloseDialog,  Key? key}) : super(key: key);
+  const MainBody(
+      {required this.dropDown,
+      required this.fromSide,
+      this.noCloseDialog = false,
+      Key? key})
+      : super(key: key);
 
   @override
   State<MainBody> createState() => _MainBodyState();
@@ -187,8 +218,8 @@ class _MainBodyState extends State<MainBody> {
   void initState() {
     super.initState();
     mainList = widget.dropDown.data;
-    maxHeight = widget.fromSide? 1 :0.7;
-    minHeight = widget.fromSide? 1 :0.3;
+    maxHeight = widget.fromSide ? 1 : 0.7;
+    minHeight = widget.fromSide ? 1 : 0.3;
     _setSearchWidgetListener();
   }
 
@@ -220,35 +251,35 @@ class _MainBodyState extends State<MainBody> {
                     /// Done button
                     Visibility(
                       visible:
-                      // widget.dropDown.enableMultipleSelection &&
+                          // widget.dropDown.enableMultipleSelection &&
                           widget.dropDown.showDoneOnHeader,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child:
-                        widget.dropDown.submitButtonChild??
+                        child: widget.dropDown.submitButtonChild ??
                             MaterialButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              side: const BorderSide(color: Colors.transparent, width: 0)),
-                          color: Colors.green.shade300,
-                          onPressed: () {
-                            List<SelectedListItem> selectedList = widget
-                                .dropDown.data
-                                .where(
-                                    (element) => element.isSelected ?? false)
-                                .toList();
-                            List<SelectedListItem> selectedNameList = [];
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  side: const BorderSide(
+                                      color: Colors.transparent, width: 0)),
+                              color: Colors.green.shade300,
+                              onPressed: () {
+                                List<SelectedListItem> selectedList = widget
+                                    .dropDown.data
+                                    .where((element) =>
+                                        element.isSelected ?? false)
+                                    .toList();
+                                List<SelectedListItem> selectedNameList = [];
 
-                            for (var element in selectedList) {
-                              selectedNameList.add(element);
-                            }
+                                for (var element in selectedList) {
+                                  selectedNameList.add(element);
+                                }
 
-                            widget.dropDown.selectedItems
-                                ?.call(selectedNameList);
-                            _onUnFocusKeyboardAndPop();
-                          },
-                          child: const Text('Done'),
-                        ),
+                                widget.dropDown.selectedItems
+                                    ?.call(selectedNameList);
+                                _onUnFocusKeyboardAndPop();
+                              },
+                              child: const Text('Done'),
+                            ),
                       ),
                     ),
                   ],
@@ -289,12 +320,12 @@ class _MainBodyState extends State<MainBody> {
                                     element.isSelected = false;
                                   }
                                   mainList[index].isSelected = !isSelected;
-                                  widget.dropDown.selectedItems
-                                      ?.call([mainList[index]]);
-                                  if(!widget.noCloseDialog!) {
+                                  if (!widget.noCloseDialog!) {
                                     _onUnFocusKeyboardAndPop();
                                   }
                                 }
+                                widget.dropDown.selectedItems
+                                    ?.call([mainList[index]]);
                               });
                             },
                             child: ListTile(
@@ -379,47 +410,54 @@ class _MainBodyState extends State<MainBody> {
                 ),
               ),
 
+              /// Controller Button
               Visibility(
                 visible:
-                // widget.dropDown.enableMultipleSelection &&
+                    // widget.dropDown.enableMultipleSelection &&
                     !widget.dropDown.showDoneOnHeader,
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: widget.dropDown.buttonPadding ?? const EdgeInsets.only(right: 15, left: 15, top: 5),
+                    padding: widget.dropDown.buttonPadding ??
+                        const EdgeInsets.only(right: 15, left: 15, top: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       // crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        widget.dropDown.cancelButtonChild != null ?
-                        Expanded(
-                          flex: 1,
-                          child: widget.dropDown.cancelButtonChild!,
-                        ) : SizedBox(),
+                        widget.dropDown.cancelButtonChild != null
+                            ? Expanded(
+                                flex: 1,
+                                child: widget.dropDown.cancelButtonChild!,
+                              )
+                            : const SizedBox(),
                         Expanded(
                           flex: widget.dropDown.submitButtonFlex ?? 2,
-                          child: widget.dropDown.submitButtonChild??
+                          child: widget.dropDown.submitButtonChild ??
                               MaterialButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
-                                    side: const BorderSide(color: Colors.transparent, width: 0)),
+                                    side: const BorderSide(
+                                        color: Colors.transparent, width: 0)),
                                 color: Colors.green.shade500,
-                                  onPressed: () {
-                                    List<SelectedListItem> selectedList = widget
-                                        .dropDown.data
-                                        .where((element) => element.isSelected ?? false)
-                                        .toList();
-                                    List<SelectedListItem> selectedNameList = [];
+                                onPressed: () {
+                                  List<SelectedListItem> selectedList = widget
+                                      .dropDown.data
+                                      .where((element) =>
+                                          element.isSelected ?? false)
+                                      .toList();
+                                  List<SelectedListItem> selectedNameList = [];
 
-                                    for (var element in selectedList) {
-                                      selectedNameList.add(element);
-                                    }
+                                  for (var element in selectedList) {
+                                    selectedNameList.add(element);
+                                  }
 
-                                    widget.dropDown.selectedItems?.call(selectedNameList);
-                                    _onUnFocusKeyboardAndPop();
-                                  },
-                                child: const Text('Done', style: TextStyle(color: Colors.white)),
+                                  widget.dropDown.selectedItems
+                                      ?.call(selectedNameList);
+                                  _onUnFocusKeyboardAndPop();
+                                },
+                                child: const Text('Done',
+                                    style: TextStyle(color: Colors.white)),
                               ),
                         ),
                       ],
@@ -461,3 +499,4 @@ class _MainBodyState extends State<MainBody> {
     });
   }
 }
+

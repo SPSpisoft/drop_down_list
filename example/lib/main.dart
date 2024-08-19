@@ -169,18 +169,25 @@ class AppTextField extends StatefulWidget {
 class _AppTextFieldState extends State<AppTextField> {
   int last = -1;
 
+  List<double> myList = [ 2.5, 5.6, 4.0 ];
+
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
-    DropDownState(
-      DropDown(
+
+    DropDownNumState(
+      DropDownNumerical(
         isDismissible: true,
-        isSearchVisible: false,
+        valuesList: myList,
+        minValue: -15.0,
+        maxValue: 20.0,
+        decimalPlace: 1,
+        // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
         margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
         fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
         dropDownBackgroundColor: Colors.white,
-        bottomSheetTitle: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: const Text(
+        bottomSheetTitle: const Padding(
+          padding: EdgeInsets.all(15.0),
+          child: Text(
             kCities,
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -188,43 +195,69 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
           ),
         ),
-        // showRadioButton: false,
-        // submitButtonChild:  Center(
-        //   child: Text(
-        //     'Done000',
-        //     style: TextStyle(
-        //       fontSize: 16,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        // ),
-        cancelButtonChild: Text("Cancel", style: TextStyle(color: Colors.white)),
-        data: widget.cities ?? [],
-        // listItemBuilder: (index) => InkWell(
-        //   onTap: () {
-        //     last = index;
-        //     FocusScope.of(context).unfocus();
-        //     Navigator.of(context).pop();
-        //   },
-        //     child: Text(widget.cities![index].name , style: TextStyle(color: (index == last) ? Colors.red : Colors.black87))),
-        selectedItems: (List<dynamic> selectedList) {
-          List<String> list = [];
-          for (var item in selectedList) {
-            if (item is SelectedListItem) {
-              list.add(item.name);
-            }
-          }
-          showSnackBar(list.toString());
-        },
-        textStyle: TextStyle(color: Colors.red),
-        textStyleSelected: TextStyle(color: Colors.blue),
-        selectedColor: Colors.blue,
-        color: Colors.red,
-        enableMultipleSelection: false,
+        cancelButtonChild: const Text("Cancel", style: TextStyle(color: Colors.white)),
+        textStyle: const TextStyle(color: Colors.red),
         noCloseDialog: true,
         // listItemBuilder: (index) => Text(widget.cities![index].name),
       ),
     ).showModal(context);
+
+    // DropDownState(
+    //   DropDown(
+    //     isDismissible: true,
+    //     isSearchVisible: false,
+    //     // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
+    //     margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
+    //     fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
+    //     dropDownBackgroundColor: Colors.white,
+    //     bottomSheetTitle: const Padding(
+    //       padding: EdgeInsets.all(15.0),
+    //       child: Text(
+    //         kCities,
+    //         style: TextStyle(
+    //           fontWeight: FontWeight.bold,
+    //           fontSize: 20.0,
+    //         ),
+    //       ),
+    //     ),
+    //     // showRadioButton: false,
+    //     // submitButtonChild:  Center(
+    //     //   child: Text(
+    //     //     'Done000',
+    //     //     style: TextStyle(
+    //     //       fontSize: 16,
+    //     //       fontWeight: FontWeight.bold,
+    //     //     ),
+    //     //   ),
+    //     // ),
+    //     cancelButtonChild: const Text("Cancel", style: TextStyle(color: Colors.white)),
+    //     data: widget.cities ?? [],
+    //
+    //     // listItemBuilder: (index) => InkWell(
+    //     //   onTap: () {
+    //     //     last = index;
+    //     //     FocusScope.of(context).unfocus();
+    //     //     Navigator.of(context).pop();
+    //     //   },
+    //     //     child: Text(widget.cities![index].name , style: TextStyle(color: (index == last) ? Colors.red : Colors.black87))),
+    //     selectedItems: (List<dynamic> selectedList) {
+    //       List<String> list = [];
+    //       for (var item in selectedList) {
+    //         if (item is SelectedListItem) {
+    //           list.add(item.name);
+    //         }
+    //       }
+    //       showSnackBar(list.toString());
+    //     },
+    //     textStyle: const TextStyle(color: Colors.red),
+    //     textStyleSelected: const TextStyle(color: Colors.blue),
+    //     selectedColor: Colors.blue,
+    //     color: Colors.red,
+    //     enableMultipleSelection: true,
+    //     noCloseDialog: true,
+    //     // listItemBuilder: (index) => Text(widget.cities![index].name),
+    //   ),
+    // ).showModal(context);
   }
 
   void showSnackBar(String message) {
