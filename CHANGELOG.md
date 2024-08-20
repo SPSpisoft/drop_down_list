@@ -1,3 +1,5 @@
+## 1.3.1
+* debug numerical
 ## 1.3.0
 * add numerical
 ## 1.2.11
