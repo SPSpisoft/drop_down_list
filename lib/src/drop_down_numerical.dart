@@ -11,7 +11,13 @@ import 'numerical_view.dart';
 typedef BottomNumSheetListener = bool Function(
     DraggableScrollableNotification draggableScrollableNotification);
 
+typedef ListItemsCallBack = Function(List<double>? listItems);
+
 class DropDownNumerical {
+
+  /// This will give the call back to the selected items from list.
+  final ListItemsCallBack? refreshItems;
+
   final bool showDoneOnHeader;
 
   /// You can set your custom submit button when the multiple selection is enabled.
@@ -54,6 +60,7 @@ class DropDownNumerical {
 
   DropDownNumerical({
     Key? key,
+    this.refreshItems,
     this.customTopWidget,
     this.hintText,
     this.labelText,
@@ -287,16 +294,21 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
           isOutOfRange = false;
         });
       } else if (value == gKeyAdd) {
-        if ((widget.minValue != null &&
-                double.parse(text) < widget.minValue!) ||
-            (widget.maxValue != null &&
-                double.parse(text) > widget.maxValue!)) {
-          isOutOfRange = true;
-        } else {
-          widget.dropDownNumerical.valuesList!.add(double.parse(text));
-          _listHorizontalKey.currentState?.addItem(double.parse(text));
-          isOutOfRange = false;
-          text = "";
+        if(text.isNotEmpty) {
+          if ((widget.minValue != null &&
+              double.parse(text) < widget.minValue!) ||
+              (widget.maxValue != null &&
+                  double.parse(text) > widget.maxValue!)) {
+            isOutOfRange = true;
+          } else {
+            widget.dropDownNumerical.valuesList!.add(double.parse(text));
+            _listHorizontalKey.currentState?.addItem(double.parse(text));
+            isOutOfRange = false;
+            text = "";
+
+            widget.dropDownNumerical.refreshItems?.call(
+                widget.dropDownNumerical.valuesList);
+          }
         }
       }
 
@@ -453,6 +465,9 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                             callBackRemove: (i) {
                               setState(() {
                                 widget.dropDownNumerical.valuesList!.removeAt(i);
+
+                                widget.dropDownNumerical.refreshItems?.call(
+                                    widget.dropDownNumerical.valuesList);
                               });
                             }, key: _listHorizontalKey,
                             // animationController:

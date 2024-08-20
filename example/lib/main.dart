@@ -229,6 +229,9 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
           ),
         ),
+        refreshItems: (listItems) {
+          print(listItems);
+        },
         cancelButtonChild: const Text("Cancel", style: TextStyle(color: Colors.white)),
         textStyle: const TextStyle(color: Colors.red),
         noCloseDialog: true,
