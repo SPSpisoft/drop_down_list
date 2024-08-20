@@ -1,3 +1,5 @@
+## 1.3.2
+* debug numerical padding/header
 ## 1.3.1
 * debug numerical
 ## 1.3.0
