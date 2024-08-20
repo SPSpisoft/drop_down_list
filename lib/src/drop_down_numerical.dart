@@ -215,8 +215,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
       fontSize: 20, color: Colors.black54, fontWeight: FontWeight.bold);
 
   double minHeight = 0.3;
-  double maxHeight = 0.7;
-  double initHeight = 0.6;
+  double maxHeight = 0.8;
+  double initHeight = 0.7;
 
   TextEditingController currentValueController = TextEditingController();
 
@@ -315,9 +315,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
             maxHeight: maxHeight*height,
             minHeight: minHeight*height,
           ),
-            padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
             clipBehavior: Clip.antiAlias,
-            decoration: const BoxDecoration(color: Colors.white),
+            decoration: const BoxDecoration(color: Colors.transparent),
             child: Column(
               children: [
                 Padding(
@@ -355,231 +354,245 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 12, right: 12),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          style: Theme.of(context).textTheme.bodySmall?.apply(
-                              color: Colors.black,
-                              fontSizeFactor: 1.5,
-                              fontWeightDelta: 1),
-                          textInputAction: TextInputAction.done,
-                          enabled: true,
-                          readOnly: true,
-                          autofocus: true,
-                          focusNode: _focusNode,
-                          showCursor: true,
-                          // cursorColor: Colors.blue,
-                          controller: textEditingController,
-                          decoration: InputDecoration(
-                            suffix: widget
-                                    .dropDownNumerical.inputDescriptionWidget ??
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ((widget.minValue != null &&
-                                            widget.maxValue != null)
-                                        ? Text(
-                                            "( " +
-                                                widget.minValue.toString() +
-                                                " .. " +
-                                                widget.maxValue.toString() +
-                                                " )",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: isOutOfRange
-                                                    ? Colors.red
-                                                    : Colors.grey),
-                                          )
-                                        : const SizedBox()),
-                                    ((widget.dropDownNumerical.description !=
-                                            null)
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 5, right: 5),
-                                            child: Text(
-                                              widget.dropDownNumerical
-                                                  .description!,
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: isOutOfRange
-                                                      ? Colors.red
-                                                      : Colors.grey),
-                                            ),
-                                          )
-                                        : const SizedBox()),
-                                  ],
-                                ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: const OutlineInputBorder(),
-                            labelText:
-                                widget.dropDownNumerical.labelText ?? "Input",
-                            hintText: widget.dropDownNumerical.hintText,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                widget.dropDownNumerical.customTopWidget ?? const SizedBox(),
-                widget.dropDownNumerical.valuesList != null
-                    ?
-                    Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: ListHorizontal(
-                          valuesList: widget.dropDownNumerical.valuesList!.reversed.toList(),
-                          lowRange: double.parse(numericalAvgToText(
-                                  widget.dropDownNumerical.valuesList,
-                                  widget.decimalPlace!)) -
-                              double.parse(numericalStandardToText(
-                                  widget.dropDownNumerical.valuesList, 2)),
-                          hiRange: double.parse(numericalAvgToText(
-                                  widget.dropDownNumerical.valuesList,
-                                  widget.decimalPlace!)) +
-                              double.parse(numericalStandardToText(
-                                  widget.dropDownNumerical.valuesList, 2)),
-                          callBackRemove: (i) {
-                            setState(() {
-                              widget.dropDownNumerical.valuesList!.removeAt(i);
-                            });
-                          }, key: _listHorizontalKey,
-                          // animationController:
-                          //     horizontalListAnimationController,
-                        ),
-                      )
-                    : const SizedBox(),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    width: double.infinity,
-                    height: 1,
-                    color: Colors.black12,
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(right: 12, left: 12, bottom: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            widget.txtAverage ?? "Average : ",
-                            style: myTextStyle,
-                          ),
-                          Text(
-                            numericalAvgToText(
-                                widget.dropDownNumerical.valuesList,
-                                widget.decimalPlace!),
-                            style: myTextBoldStyle,
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            widget.txtDeviation ?? "St.Deviation : ",
-                            style: myTextStyle,
-                          ),
-                          Text(
-                            numericalStandardToText(
-                                widget.dropDownNumerical.valuesList, 2),
-                            style: myTextBoldStyle,
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                // padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
+
                 Expanded(
-                  child: NumericKeyboard(
-                    onKeyboardTap: onKeyboardTap,
-                    ctrlWidgets: myCtrlWidgets,
-                    boxShadow: const [
-                      BoxShadow(color: Colors.black54, offset: Offset(0, 1))
-                    ],
-                    leftIcon: const Center(
-                      child: Text("-/+",
-                          style: TextStyle(color: Colors.grey, fontSize: 20)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 12),
+
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  style: Theme.of(context).textTheme.bodySmall?.apply(
+                                      color: Colors.black,
+                                      fontSizeFactor: 1.5,
+                                      fontWeightDelta: 1),
+                                  textInputAction: TextInputAction.done,
+                                  enabled: true,
+                                  readOnly: true,
+                                  autofocus: true,
+                                  focusNode: _focusNode,
+                                  showCursor: true,
+                                  // cursorColor: Colors.blue,
+                                  controller: textEditingController,
+                                  decoration: InputDecoration(
+                                    suffix: widget
+                                            .dropDownNumerical.inputDescriptionWidget ??
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            ((widget.minValue != null &&
+                                                    widget.maxValue != null)
+                                                ? Text(
+                                                    "( " +
+                                                        widget.minValue.toString() +
+                                                        " .. " +
+                                                        widget.maxValue.toString() +
+                                                        " )",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: isOutOfRange
+                                                            ? Colors.red
+                                                            : Colors.grey),
+                                                  )
+                                                : const SizedBox()),
+                                            ((widget.dropDownNumerical.description !=
+                                                    null)
+                                                ? Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 5, right: 5),
+                                                    child: Text(
+                                                      widget.dropDownNumerical
+                                                          .description!,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: isOutOfRange
+                                                              ? Colors.red
+                                                              : Colors.grey),
+                                                    ),
+                                                  )
+                                                : const SizedBox()),
+                                          ],
+                                        ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    border: const OutlineInputBorder(),
+                                    labelText:
+                                        widget.dropDownNumerical.labelText ?? "Input",
+                                    hintText: widget.dropDownNumerical.hintText,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        widget.dropDownNumerical.customTopWidget ?? const SizedBox(),
+                        widget.dropDownNumerical.valuesList != null
+                            ?
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: ListHorizontal(
+                            valuesList: widget.dropDownNumerical.valuesList!.reversed.toList(),
+                            lowRange: double.parse(numericalAvgToText(
+                                widget.dropDownNumerical.valuesList,
+                                widget.decimalPlace!)) -
+                                double.parse(numericalStandardToText(
+                                    widget.dropDownNumerical.valuesList, 2)),
+                            hiRange: double.parse(numericalAvgToText(
+                                widget.dropDownNumerical.valuesList,
+                                widget.decimalPlace!)) +
+                                double.parse(numericalStandardToText(
+                                    widget.dropDownNumerical.valuesList, 2)),
+                            callBackRemove: (i) {
+                              setState(() {
+                                widget.dropDownNumerical.valuesList!.removeAt(i);
+                              });
+                            }, key: _listHorizontalKey,
+                            // animationController:
+                            //     horizontalListAnimationController,
+                          ),
+                        )
+                            : const SizedBox(),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                            width: double.infinity,
+                            height: 1,
+                            color: Colors.black12,
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                          const EdgeInsets.only(right: 12, left: 12, bottom: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.txtAverage ?? "Average : ",
+                                    style: myTextStyle,
+                                  ),
+                                  Text(
+                                    numericalAvgToText(
+                                        widget.dropDownNumerical.valuesList,
+                                        widget.decimalPlace!),
+                                    style: myTextBoldStyle,
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.txtDeviation ?? "St.Deviation : ",
+                                    style: myTextStyle,
+                                  ),
+                                  Text(
+                                    numericalStandardToText(
+                                        widget.dropDownNumerical.valuesList, 2),
+                                    style: myTextBoldStyle,
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: NumericKeyboard(
+                            onKeyboardTap: onKeyboardTap,
+                            ctrlWidgets: myCtrlWidgets,
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black54, offset: Offset(0, 1))
+                            ],
+                            leftIcon: const Center(
+                              child: Text("-/+",
+                                  style: TextStyle(color: Colors.grey, fontSize: 20)),
+                            ),
+                            leftButtonFn: () {
+                              if (text.isEmpty) return;
+                              setState(() {
+                                if (text.substring(0, 1) == '-') {
+                                  text = text.substring(1);
+                                } else if (widget.minValue == null ||
+                                    widget.minValue! < 0) {
+                                  text = "-" + text;
+                                }
+                                textEditingController.text = text;
+                              });
+                            },
+                            rightIcon: const Center(
+                              child: Text(".",
+                                  style: TextStyle(color: Colors.grey, fontSize: 20)),
+                            ),
+                            rightButtonFn: () {
+                              if (text.isEmpty ||
+                                  text.contains(".") ||
+                                  widget.decimalPlace == 0) return;
+                              setState(() {
+                                text = text + ".";
+                                textEditingController.text = text;
+                              });
+                            },
+                          ),
+                        ),
+
+                        /// Controller Button
+                        Visibility(
+                          visible:
+                          // widget.dropDownNumerical.enableMultipleSelection &&
+                          !widget.dropDownNumerical.showDoneOnHeader,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: widget.dropDownNumerical.buttonPadding ??
+                                  const EdgeInsets.only(right: 15, left: 15, top: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  widget.dropDownNumerical.cancelButtonChild != null
+                                      ? Expanded(
+                                    flex: 1,
+                                    child: widget
+                                        .dropDownNumerical.cancelButtonChild!,
+                                  )
+                                      : const SizedBox(),
+                                  Expanded(
+                                    flex:
+                                    widget.dropDownNumerical.submitButtonFlex ?? 2,
+                                    child: widget.dropDownNumerical.submitButtonChild ??
+                                        MaterialButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(15),
+                                              side: const BorderSide(
+                                                  color: Colors.transparent, width: 0)),
+                                          color: Colors.green.shade500,
+                                          onPressed: () {},
+                                          child: const Text('Done',
+                                              style: TextStyle(color: Colors.white)),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    leftButtonFn: () {
-                      if (text.isEmpty) return;
-                      setState(() {
-                        if (text.substring(0, 1) == '-') {
-                          text = text.substring(1);
-                        } else if (widget.minValue == null ||
-                            widget.minValue! < 0) {
-                          text = "-" + text;
-                        }
-                        textEditingController.text = text;
-                      });
-                    },
-                    rightIcon: const Center(
-                      child: Text(".",
-                          style: TextStyle(color: Colors.grey, fontSize: 20)),
-                    ),
-                    rightButtonFn: () {
-                      if (text.isEmpty ||
-                          text.contains(".") ||
-                          widget.decimalPlace == 0) return;
-                      setState(() {
-                        text = text + ".";
-                        textEditingController.text = text;
-                      });
-                    },
                   ),
                 ),
 
-                /// Controller Button
-                Visibility(
-                  visible:
-                      // widget.dropDownNumerical.enableMultipleSelection &&
-                      !widget.dropDownNumerical.showDoneOnHeader,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: widget.dropDownNumerical.buttonPadding ??
-                          const EdgeInsets.only(right: 15, left: 15, top: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          widget.dropDownNumerical.cancelButtonChild != null
-                              ? Expanded(
-                                  flex: 1,
-                                  child: widget
-                                      .dropDownNumerical.cancelButtonChild!,
-                                )
-                              : const SizedBox(),
-                          Expanded(
-                            flex:
-                                widget.dropDownNumerical.submitButtonFlex ?? 2,
-                            child: widget.dropDownNumerical.submitButtonChild ??
-                                MaterialButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      side: const BorderSide(
-                                          color: Colors.transparent, width: 0)),
-                                  color: Colors.green.shade500,
-                                  onPressed: () {},
-                                  child: const Text('Done',
-                                      style: TextStyle(color: Colors.white)),
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
               ],
             )));
   }

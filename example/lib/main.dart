@@ -186,13 +186,46 @@ class _AppTextFieldState extends State<AppTextField> {
         margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
         fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
         dropDownBackgroundColor: Colors.white,
-        bottomSheetTitle: const Padding(
-          padding: EdgeInsets.all(15.0),
-          child: Text(
-            kCities,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+        bottomSheetTitle: Container(
+          decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(
+                      10),
+                  topRight: Radius.circular(10),),),
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        "title",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: Text(
+                            "   title 2",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                ),
+                // controlWidget
+                // const CtrlDismiss(),
+              ],
             ),
           ),
         ),
