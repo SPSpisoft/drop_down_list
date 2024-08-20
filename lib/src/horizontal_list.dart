@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ListHorizontal extends StatefulWidget {
-  final AnimationController? animationController;
   final List<double> valuesList;
   final void Function(int)? callBackRemove;
   final double? lowRange;
@@ -10,113 +9,114 @@ class ListHorizontal extends StatefulWidget {
   const ListHorizontal({
     Key? key,
     required this.valuesList,
-    required this.animationController,
     this.lowRange = -double.maxFinite,
     this.hiRange = double.maxFinite,
     this.callBackRemove,
   }) : super(key: key);
 
   @override
-  State<ListHorizontal> createState() => _ListHorizontalState();
+  State<ListHorizontal> createState() => ListHorizontalState();
 }
 
-class _ListHorizontalState extends State<ListHorizontal> {
+class ListHorizontalState extends State<ListHorizontal> {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  List<double> _items = [];
+
   @override
   void initState() {
     super.initState();
+    _items = List.from(widget.valuesList);
+  }
+
+  void addItem(double newValue) {
+    _items.insert(0, newValue);
+    _listKey.currentState?.insertItem(0, duration: const Duration(milliseconds: 500));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: double.infinity,
-      decoration: const BoxDecoration(color: Colors.transparent
-          ),
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: ListView.builder(
-          padding: const EdgeInsets.only(top: 0, bottom: 0, right: 5, left: 5),
-          itemCount: widget.valuesList.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) {
-            final Animation<double> animation =
-                Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-                    parent: widget.animationController!,
-                    curve: Interval((1 / widget.valuesList.length) * index, 1.0,
-                        curve: Curves.fastOutSlowIn)));
-            widget.animationController!.forward();
+    return Column(
+      children: [
+        Container(
+          height: 50,
+          width: double.infinity,
+          decoration: const BoxDecoration(color: Colors.transparent),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: AnimatedList(
+              key: _listKey,
+              padding: const EdgeInsets.only(top: 0, bottom: 0, right: 5, left: 5),
+              scrollDirection: Axis.horizontal,
+              initialItemCount: _items.length,
+              itemBuilder: (BuildContext context, int index, Animation<double> animation) {
+                Color statusColor = _items[index] < widget.lowRange! || _items[index] > widget.hiRange!
+                    ? Colors.red
+                    : Colors.green;
 
-            Color statusColor = widget.valuesList[index] < widget.lowRange! || widget.valuesList[index] > widget.hiRange! ?  Colors.red : Colors.green;
-            return AnimatedBuilder(
-              animation: widget.animationController!,
-              builder: (BuildContext context, Widget? child) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: Transform(
-                    transform: Matrix4.translationValues(
-                        0.0, 50 * (1.0 - animation.value), 0.0),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 5.0, bottom: 5.0, left: 8.0),
-                      child: InkWell(
-                        onTap: () {
-                          // widget.valuesList.removeAt(index);
-                          if (widget.callBackRemove != null) {
-                            widget.callBackRemove!(index);
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                                color: statusColor),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4.0),
-                            ),
-                            // boxShadow: <BoxShadow>[
-                            //   BoxShadow(
-                            //       color: Colors.grey,
-                            //       offset: Offset(-1, 2),
-                            //       blurRadius: 2.0),
-                            // ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 4, bottom: 4, right: 8, left: 8),
-                            child: Row(
-                              textDirection: TextDirection.ltr,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5, right: 12),
-                                  child: Text(
-                                    widget.valuesList[index].toString(),
-                                    style: TextStyle(
-                                        fontFamily: "Roboto",
-                                        fontSize: 14,
-                                        color: statusColor),
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.highlight_remove,
-                                  size: 17,
-                                  color: statusColor,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
+                return _buildItem(_items[index], animation, index, statusColor);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildItem(double value, Animation<double> animation, int index, Color statusColor) {
+    return SizeTransition(
+      sizeFactor: animation,
+      axis: Axis.horizontal,
+      child: FadeTransition(
+        opacity: animation,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 8.0),
+          child: InkWell(
+            onTap: () {
+              if (widget.callBackRemove != null) {
+                widget.callBackRemove!(index);
+              }
+              _removeItem(index);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: statusColor),
+                borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4, bottom: 4, right: 8, left: 8),
+                child: Row(
+                  textDirection: TextDirection.ltr,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 12),
+                      child: Text(
+                        value.toString(),
+                        style: TextStyle(fontFamily: "Roboto", fontSize: 14, color: statusColor),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
+                    Icon(
+                      Icons.highlight_remove,
+                      size: 17,
+                      color: statusColor,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  void _removeItem(int index) {
+    double removedItem = _items.removeAt(index);
+    _listKey.currentState?.removeItem(
+      index,
+          (context, animation) => _buildItem(removedItem, animation, index, Colors.red),
+      duration: const Duration(milliseconds: 500),
     );
   }
 }

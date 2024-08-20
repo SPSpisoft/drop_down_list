@@ -48,6 +48,7 @@ class DropDownNumerical {
 
   /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
   final BottomNumSheetListener? bottomSheetListener;
+  final String? description;
 
   Widget? inputDescriptionWidget;
 
@@ -56,6 +57,7 @@ class DropDownNumerical {
     this.customTopWidget,
     this.hintText,
     this.labelText,
+    this.description,
     this.inputDescriptionWidget,
     this.showDoneOnHeader = false,
     this.isDismissible = true,
@@ -80,7 +82,10 @@ class DropDownNumerical {
       throw ArgumentError('min and max must not be null');
     }
 
-    if (minValue != null && maxValue != null && valuesList != null && valuesList!.any((v) => v > maxValue! || v < minValue! )) {
+    if (minValue != null &&
+        maxValue != null &&
+        valuesList != null &&
+        valuesList!.any((v) => v > maxValue! || v < minValue!)) {
       throw ArgumentError('any or more value (in valuesList) is out of range');
     }
   }
@@ -203,6 +208,7 @@ class NumPadBody extends StatefulWidget {
 class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   List<SelectedListItem> mainList = [];
 
+
   Color myControlColor = Colors.black87;
   TextStyle myTextStyle = const TextStyle(fontSize: 15, color: Colors.black54);
   TextStyle myTextBoldStyle = const TextStyle(
@@ -210,7 +216,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
   double minHeight = 0.3;
   double maxHeight = 0.7;
-  double initHeight = 0.4;
+  double initHeight = 0.6;
 
   TextEditingController currentValueController = TextEditingController();
 
@@ -224,6 +230,9 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   String text = "";
 
   final FocusNode _focusNode = FocusNode();
+
+  final GlobalKey<ListHorizontalState> _listHorizontalKey = GlobalKey<ListHorizontalState>();
+
 
   @override
   void initState() {
@@ -247,6 +256,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
   bool isOutOfRange = false;
   TextEditingController textEditingController = TextEditingController();
+
+
 
   onKeyboardTap(Object? value) {
     setState(() {
@@ -276,9 +287,17 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
           isOutOfRange = false;
         });
       } else if (value == gKeyAdd) {
-        widget.dropDownNumerical.valuesList!.add(double.parse(text));
-        isOutOfRange = false;
-        text = "";
+        if ((widget.minValue != null &&
+                double.parse(text) < widget.minValue!) ||
+            (widget.maxValue != null &&
+                double.parse(text) > widget.maxValue!)) {
+          isOutOfRange = true;
+        } else {
+          widget.dropDownNumerical.valuesList!.add(double.parse(text));
+          _listHorizontalKey.currentState?.addItem(double.parse(text));
+          isOutOfRange = false;
+          text = "";
+        }
       }
 
       textEditingController.text = text;
@@ -287,15 +306,55 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.sizeOf(context).height;
     return NotificationListener<DraggableScrollableNotification>(
         onNotification: widget.dropDownNumerical.bottomSheetListener,
         child: Container(
-            height: 450,
+          height: initHeight*height,
+          constraints: BoxConstraints(
+            maxHeight: maxHeight*height,
+            minHeight: minHeight*height,
+          ),
             padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
             clipBehavior: Clip.antiAlias,
             decoration: const BoxDecoration(color: Colors.white),
             child: Column(
               children: [
+                Padding(
+                  padding:
+                  const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /// Bottom sheet title text
+                      Expanded(
+                          child: widget.dropDownNumerical.bottomSheetTitle ?? Container()),
+
+                      /// Done button
+                      Visibility(
+                        visible:
+                        // widget.dropDown.enableMultipleSelection &&
+                        widget.dropDownNumerical.showDoneOnHeader,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: widget.dropDownNumerical.submitButtonChild ??
+                              MaterialButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    side: const BorderSide(
+                                        color: Colors.transparent, width: 0)),
+                                color: Colors.green.shade300,
+                                onPressed: () {
+
+                                  _onUnFocusKeyboardAndPop();
+                                },
+                                child: const Text('Done'),
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12, right: 12),
                   child: Row(
@@ -317,21 +376,43 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                           decoration: InputDecoration(
                             suffix: widget
                                     .dropDownNumerical.inputDescriptionWidget ??
-                                ((widget.minValue != null &&
-                                        widget.maxValue != null)
-                                    ? Text(
-                                        "( " +
-                                            widget.minValue.toString() +
-                                            " .. " +
-                                            widget.maxValue.toString() +
-                                            " )",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: isOutOfRange
-                                                ? Colors.red
-                                                : Colors.grey),
-                                      )
-                                    : const SizedBox()),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ((widget.minValue != null &&
+                                            widget.maxValue != null)
+                                        ? Text(
+                                            "( " +
+                                                widget.minValue.toString() +
+                                                " .. " +
+                                                widget.maxValue.toString() +
+                                                " )",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: isOutOfRange
+                                                    ? Colors.red
+                                                    : Colors.grey),
+                                          )
+                                        : const SizedBox()),
+                                    ((widget.dropDownNumerical.description !=
+                                            null)
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5, right: 5),
+                                            child: Text(
+                                              widget.dropDownNumerical
+                                                  .description!,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: isOutOfRange
+                                                      ? Colors.red
+                                                      : Colors.grey),
+                                            ),
+                                          )
+                                        : const SizedBox()),
+                                  ],
+                                ),
                             filled: true,
                             fillColor: Colors.white,
                             border: const OutlineInputBorder(),
@@ -347,11 +428,10 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                 widget.dropDownNumerical.customTopWidget ?? const SizedBox(),
                 widget.dropDownNumerical.valuesList != null
                     ?
-                    // valueListHorizontal(widget.dropDownNumerical.valuesList!)
                     Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: ListHorizontal(
-                          valuesList: widget.dropDownNumerical.valuesList!,
+                          valuesList: widget.dropDownNumerical.valuesList!.reversed.toList(),
                           lowRange: double.parse(numericalAvgToText(
                                   widget.dropDownNumerical.valuesList,
                                   widget.decimalPlace!)) -
@@ -366,9 +446,9 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                             setState(() {
                               widget.dropDownNumerical.valuesList!.removeAt(i);
                             });
-                          },
-                          animationController:
-                              horizontalListAnimationController,
+                          }, key: _listHorizontalKey,
+                          // animationController:
+                          //     horizontalListAnimationController,
                         ),
                       )
                     : const SizedBox(),
@@ -563,5 +643,10 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     }
 
     return ret;
+  }
+
+  _onUnFocusKeyboardAndPop() {
+    FocusScope.of(context).unfocus();
+    Navigator.of(context).pop();
   }
 }

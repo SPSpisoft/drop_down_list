@@ -181,6 +181,7 @@ class _AppTextFieldState extends State<AppTextField> {
         minValue: -15.0,
         maxValue: 20.0,
         decimalPlace: 1,
+        description: "cm",
         // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
         margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
         fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
