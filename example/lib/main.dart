@@ -187,13 +187,13 @@ class _AppTextFieldState extends State<AppTextField> {
         fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
         dropDownBackgroundColor: Colors.white,
         bottomSheetTitle: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: Colors.grey,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(
                       10),
                   topRight: Radius.circular(10),),),
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.all(15),
             child: Row(
               children: [

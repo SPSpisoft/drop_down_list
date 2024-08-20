@@ -464,7 +464,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                     widget.dropDownNumerical.valuesList, 2)),
                             callBackRemove: (i) {
                               setState(() {
-                                widget.dropDownNumerical.valuesList!.removeAt(i);
+                                widget.dropDownNumerical.valuesList!.reversed.toList().removeAt(i);
 
                                 widget.dropDownNumerical.refreshItems?.call(
                                     widget.dropDownNumerical.valuesList);
