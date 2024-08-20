@@ -14,7 +14,6 @@ typedef BottomNumSheetListener = bool Function(
 typedef ListItemsCallBack = Function(List<double>? listItems);
 
 class DropDownNumerical {
-
   /// This will give the call back to the selected items from list.
   final ListItemsCallBack? refreshItems;
 
@@ -215,7 +214,6 @@ class NumPadBody extends StatefulWidget {
 class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   List<SelectedListItem> mainList = [];
 
-
   Color myControlColor = Colors.black87;
   TextStyle myTextStyle = const TextStyle(fontSize: 15, color: Colors.black54);
   TextStyle myTextBoldStyle = const TextStyle(
@@ -238,8 +236,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
   final FocusNode _focusNode = FocusNode();
 
-  final GlobalKey<ListHorizontalState> _listHorizontalKey = GlobalKey<ListHorizontalState>();
-
+  final GlobalKey<ListHorizontalState> _listHorizontalKey =
+      GlobalKey<ListHorizontalState>();
 
   @override
   void initState() {
@@ -263,8 +261,6 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
   bool isOutOfRange = false;
   TextEditingController textEditingController = TextEditingController();
-
-
 
   onKeyboardTap(Object? value) {
     setState(() {
@@ -294,9 +290,9 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
           isOutOfRange = false;
         });
       } else if (value == gKeyAdd) {
-        if(text.isNotEmpty) {
+        if (text.isNotEmpty) {
           if ((widget.minValue != null &&
-              double.parse(text) < widget.minValue!) ||
+                  double.parse(text) < widget.minValue!) ||
               (widget.maxValue != null &&
                   double.parse(text) > widget.maxValue!)) {
             isOutOfRange = true;
@@ -306,8 +302,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
             isOutOfRange = false;
             text = "";
 
-            widget.dropDownNumerical.refreshItems?.call(
-                widget.dropDownNumerical.valuesList);
+            widget.dropDownNumerical.refreshItems
+                ?.call(widget.dropDownNumerical.valuesList);
           }
         }
       }
@@ -322,30 +318,31 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     return NotificationListener<DraggableScrollableNotification>(
         onNotification: widget.dropDownNumerical.bottomSheetListener,
         child: Container(
-          height: initHeight*height,
-          constraints: BoxConstraints(
-            maxHeight: maxHeight*height,
-            minHeight: minHeight*height,
-          ),
+            height: initHeight * height,
+            constraints: BoxConstraints(
+              maxHeight: maxHeight * height,
+              minHeight: minHeight * height,
+            ),
             clipBehavior: Clip.antiAlias,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Column(
               children: [
                 Padding(
                   padding:
-                  const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       /// Bottom sheet title text
                       Expanded(
-                          child: widget.dropDownNumerical.bottomSheetTitle ?? Container()),
+                          child: widget.dropDownNumerical.bottomSheetTitle ??
+                              Container()),
 
                       /// Done button
                       Visibility(
                         visible:
-                        // widget.dropDown.enableMultipleSelection &&
-                        widget.dropDownNumerical.showDoneOnHeader,
+                            // widget.dropDown.enableMultipleSelection &&
+                            widget.dropDownNumerical.showDoneOnHeader,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: widget.dropDownNumerical.submitButtonChild ??
@@ -356,7 +353,6 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                         color: Colors.transparent, width: 0)),
                                 color: Colors.green.shade300,
                                 onPressed: () {
-
                                   _onUnFocusKeyboardAndPop();
                                 },
                                 child: const Text('Done'),
@@ -370,20 +366,23 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
+                    padding:
+                        const EdgeInsets.only(top: 24, left: 16, right: 16),
                     child: Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 12, right: 12),
-
                           child: Row(
                             children: [
                               Expanded(
                                 child: TextField(
-                                  style: Theme.of(context).textTheme.bodySmall?.apply(
-                                      color: Colors.black,
-                                      fontSizeFactor: 1.5,
-                                      fontWeightDelta: 1),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.apply(
+                                          color: Colors.black,
+                                          fontSizeFactor: 1.5,
+                                          fontWeightDelta: 1),
                                   textInputAction: TextInputAction.done,
                                   enabled: true,
                                   readOnly: true,
@@ -393,19 +392,22 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                   // cursorColor: Colors.blue,
                                   controller: textEditingController,
                                   decoration: InputDecoration(
-                                    suffix: widget
-                                            .dropDownNumerical.inputDescriptionWidget ??
+                                    suffix: widget.dropDownNumerical
+                                            .inputDescriptionWidget ??
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             ((widget.minValue != null &&
                                                     widget.maxValue != null)
                                                 ? Text(
                                                     "( " +
-                                                        widget.minValue.toString() +
+                                                        widget.minValue
+                                                            .toString() +
                                                         " .. " +
-                                                        widget.maxValue.toString() +
+                                                        widget.maxValue
+                                                            .toString() +
                                                         " )",
                                                     style: TextStyle(
                                                         fontSize: 14,
@@ -414,11 +416,13 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                                             : Colors.grey),
                                                   )
                                                 : const SizedBox()),
-                                            ((widget.dropDownNumerical.description !=
+                                            ((widget.dropDownNumerical
+                                                        .description !=
                                                     null)
                                                 ? Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        left: 5, right: 5),
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5, right: 5),
                                                     child: Text(
                                                       widget.dropDownNumerical
                                                           .description!,
@@ -436,7 +440,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                     fillColor: Colors.white,
                                     border: const OutlineInputBorder(),
                                     labelText:
-                                        widget.dropDownNumerical.labelText ?? "Input",
+                                        widget.dropDownNumerical.labelText ??
+                                            "Input",
                                     hintText: widget.dropDownNumerical.hintText,
                                   ),
                                 ),
@@ -445,35 +450,45 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                           ),
                         ),
 
-                        widget.dropDownNumerical.customTopWidget ?? const SizedBox(),
+                        widget.dropDownNumerical.customTopWidget ??
+                            const SizedBox(),
                         widget.dropDownNumerical.valuesList != null
-                            ?
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: ListHorizontal(
-                            valuesList: widget.dropDownNumerical.valuesList!.reversed.toList(),
-                            lowRange: double.parse(numericalAvgToText(
-                                widget.dropDownNumerical.valuesList,
-                                widget.decimalPlace!)) -
-                                double.parse(numericalStandardToText(
-                                    widget.dropDownNumerical.valuesList, 2)),
-                            hiRange: double.parse(numericalAvgToText(
-                                widget.dropDownNumerical.valuesList,
-                                widget.decimalPlace!)) +
-                                double.parse(numericalStandardToText(
-                                    widget.dropDownNumerical.valuesList, 2)),
-                            callBackRemove: (i) {
-                              setState(() {
-                                widget.dropDownNumerical.valuesList!.reversed.toList().removeAt(i);
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: ListHorizontal(
+                                  valuesList: widget
+                                      .dropDownNumerical.valuesList!.reversed
+                                      .toList(),
+                                  lowRange: double.parse(numericalAvgToText(
+                                          widget.dropDownNumerical.valuesList,
+                                          widget.decimalPlace!)) -
+                                      double.parse(numericalStandardToText(
+                                          widget.dropDownNumerical.valuesList,
+                                          2)),
+                                  hiRange: double.parse(numericalAvgToText(
+                                          widget.dropDownNumerical.valuesList,
+                                          widget.decimalPlace!)) +
+                                      double.parse(numericalStandardToText(
+                                          widget.dropDownNumerical.valuesList,
+                                          2)),
+                                  callBackRemove: (i) {
+                                    setState(() {
+                                      widget.dropDownNumerical.valuesList!
+                                          .removeAt(widget.dropDownNumerical
+                                                  .valuesList!.length -
+                                              1 -
+                                              i);
 
-                                widget.dropDownNumerical.refreshItems?.call(
-                                    widget.dropDownNumerical.valuesList);
-                              });
-                            }, key: _listHorizontalKey,
-                            // animationController:
-                            //     horizontalListAnimationController,
-                          ),
-                        )
+                                      widget.dropDownNumerical.refreshItems
+                                          ?.call(widget
+                                              .dropDownNumerical.valuesList);
+                                    });
+                                  },
+                                  key: _listHorizontalKey,
+                                  // animationController:
+                                  //     horizontalListAnimationController,
+                                ),
+                              )
                             : const SizedBox(),
                         Padding(
                           padding: const EdgeInsets.all(12.0),
@@ -484,8 +499,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                           ),
                         ),
                         Padding(
-                          padding:
-                          const EdgeInsets.only(right: 12, left: 12, bottom: 12),
+                          padding: const EdgeInsets.only(
+                              right: 12, left: 12, bottom: 12),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -527,11 +542,13 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                             onKeyboardTap: onKeyboardTap,
                             ctrlWidgets: myCtrlWidgets,
                             boxShadow: const [
-                              BoxShadow(color: Colors.black54, offset: Offset(0, 1))
+                              BoxShadow(
+                                  color: Colors.black54, offset: Offset(0, 1))
                             ],
                             leftIcon: const Center(
                               child: Text("-/+",
-                                  style: TextStyle(color: Colors.grey, fontSize: 20)),
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 20)),
                             ),
                             leftButtonFn: () {
                               if (text.isEmpty) return;
@@ -547,7 +564,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                             },
                             rightIcon: const Center(
                               child: Text(".",
-                                  style: TextStyle(color: Colors.grey, fontSize: 20)),
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 20)),
                             ),
                             rightButtonFn: () {
                               if (text.isEmpty ||
@@ -564,38 +582,46 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                         /// Controller Button
                         Visibility(
                           visible:
-                          // widget.dropDownNumerical.enableMultipleSelection &&
-                          !widget.dropDownNumerical.showDoneOnHeader,
+                              // widget.dropDownNumerical.enableMultipleSelection &&
+                              !widget.dropDownNumerical.showDoneOnHeader,
                           child: Align(
                             alignment: Alignment.bottomCenter,
                             child: Padding(
                               padding: widget.dropDownNumerical.buttonPadding ??
-                                  const EdgeInsets.only(right: 15, left: 15, top: 5),
+                                  const EdgeInsets.only(
+                                      right: 15, left: 15, top: 5),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  widget.dropDownNumerical.cancelButtonChild != null
+                                  widget.dropDownNumerical.cancelButtonChild !=
+                                          null
                                       ? Expanded(
-                                    flex: 1,
-                                    child: widget
-                                        .dropDownNumerical.cancelButtonChild!,
-                                  )
+                                          flex: 1,
+                                          child: widget.dropDownNumerical
+                                              .cancelButtonChild!,
+                                        )
                                       : const SizedBox(),
                                   Expanded(
-                                    flex:
-                                    widget.dropDownNumerical.submitButtonFlex ?? 2,
-                                    child: widget.dropDownNumerical.submitButtonChild ??
+                                    flex: widget.dropDownNumerical
+                                            .submitButtonFlex ??
+                                        2,
+                                    child: widget.dropDownNumerical
+                                            .submitButtonChild ??
                                         MaterialButton(
                                           shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                               side: const BorderSide(
-                                                  color: Colors.transparent, width: 0)),
+                                                  color: Colors.transparent,
+                                                  width: 0)),
                                           color: Colors.green.shade500,
                                           onPressed: () {},
                                           child: const Text('Done',
-                                              style: TextStyle(color: Colors.white)),
+                                              style: TextStyle(
+                                                  color: Colors.white)),
                                         ),
                                   ),
                                 ],
@@ -607,7 +633,6 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-
               ],
             )));
   }
