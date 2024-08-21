@@ -12,10 +12,12 @@ typedef BottomNumSheetListener = bool Function(
     DraggableScrollableNotification draggableScrollableNotification);
 
 typedef ListItemsCallBack = Function(List<double>? listItems);
+typedef NewSetCallBack = Function(bool isOk);
 
 class DropDownNumerical {
   /// This will give the call back to the selected items from list.
   final ListItemsCallBack? refreshItems;
+  final NewSetCallBack? newSetCallBack;
 
   final bool showDoneOnHeader;
 
@@ -60,6 +62,7 @@ class DropDownNumerical {
   DropDownNumerical({
     Key? key,
     this.refreshItems,
+    this.newSetCallBack,
     this.customTopWidget,
     this.hintText,
     this.labelText,
@@ -308,12 +311,25 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
         }
       }
 
+      // widget.dropDownNumerical.newSetCallBack?.call(text.isNotEmpty && !isOutOfRange);
+
       textEditingController.text = text;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    textEditingController.addListener(
+      () {
+        bool outOfRange = (widget.minValue != null &&
+            double.parse(textEditingController.text) < widget.minValue!) ||
+            (widget.maxValue != null &&
+                double.parse(textEditingController.text) > widget.maxValue!);
+
+        widget.dropDownNumerical.newSetCallBack
+            ?.call(text.isNotEmpty && !outOfRange);
+      },
+    );
     double height = MediaQuery.sizeOf(context).height;
     return NotificationListener<DraggableScrollableNotification>(
         onNotification: widget.dropDownNumerical.bottomSheetListener,
@@ -553,10 +569,14 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                             leftButtonFn: () {
                               if (text.isEmpty) return;
                               setState(() {
-                                if (text.substring(0, 1) == '-') {
+                                if (text.substring(0, 1) == '-' &&
+                                    double.parse(text) * -1 <=
+                                        widget.maxValue!) {
                                   text = text.substring(1);
                                 } else if (widget.minValue == null ||
-                                    widget.minValue! < 0) {
+                                    (widget.minValue! < 0 &&
+                                        double.parse(text) * -1 >=
+                                            widget.minValue!)) {
                                   text = "-" + text;
                                 }
                                 textEditingController.text = text;

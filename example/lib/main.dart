@@ -169,7 +169,7 @@ class AppTextField extends StatefulWidget {
 class _AppTextFieldState extends State<AppTextField> {
   int last = -1;
 
-  List<double> myList = [ 2.5, 5.6, 4.0 ];
+  List<double> myList = [ 3.5, 5.6, 4.0 ];
 
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
@@ -178,10 +178,11 @@ class _AppTextFieldState extends State<AppTextField> {
       DropDownNumerical(
         isDismissible: true,
         valuesList: myList,
-        minValue: -15.0,
+        minValue: 3.0,
         maxValue: 20.0,
         decimalPlace: 1,
         description: "cm",
+        newSetCallBack: (isOk) => print("SPS  " + isOk.toString()),
         // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
         margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
         fromSide: MediaQuery.of(context).orientation == Orientation.landscape,

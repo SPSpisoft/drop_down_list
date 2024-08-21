@@ -1,3 +1,5 @@
+## 1.3.6
+* return set value is in range
 ## 1.3.4
 * debug remove set
 ## 1.3.4
