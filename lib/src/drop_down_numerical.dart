@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -12,7 +13,7 @@ typedef BottomNumSheetListener = bool Function(
     DraggableScrollableNotification draggableScrollableNotification);
 
 typedef ListItemsCallBack = Function(List<double>? listItems);
-typedef NewSetCallBack = Function(bool isOk);
+typedef NewSetCallBack = Function(double? prndingValue);
 
 class DropDownNumerical {
   /// This will give the call back to the selected items from list.
@@ -321,14 +322,18 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     textEditingController.addListener(
       () {
+        bool outOfRange = textEditingController.text.isNotEmpty &&
+            ((widget.minValue != null &&
+                    double.parse(textEditingController.text) <
+                        widget.minValue!) ||
+                (widget.maxValue != null &&
+                    double.parse(textEditingController.text) >
+                        widget.maxValue!));
 
-        bool outOfRange = textEditingController.text.isNotEmpty && ((widget.minValue != null &&
-            double.parse(textEditingController.text) < widget.minValue!) ||
-            (widget.maxValue != null &&
-                double.parse(textEditingController.text) > widget.maxValue!));
-
-        widget.dropDownNumerical.newSetCallBack
-            ?.call(text.isNotEmpty && !outOfRange);
+        widget.dropDownNumerical.newSetCallBack?.call(
+            (textEditingController.text.isNotEmpty && !outOfRange)
+                ? double.parse(textEditingController.text)
+                : null);
       },
     );
     double height = MediaQuery.sizeOf(context).height;
