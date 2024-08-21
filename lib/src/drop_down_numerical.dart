@@ -321,6 +321,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     textEditingController.addListener(
       () {
+
         bool outOfRange = textEditingController.text.isNotEmpty && ((widget.minValue != null &&
             double.parse(textEditingController.text) < widget.minValue!) ||
             (widget.maxValue != null &&
