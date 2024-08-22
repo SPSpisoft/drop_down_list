@@ -181,6 +181,7 @@ class _AppTextFieldState extends State<AppTextField> {
         minValue: 3.0,
         maxValue: 20.0,
         decimalPlace: 1,
+        ratioRange: 0,
         description: "cm",
         newSetCallBack: (isOk) => print("SPS  " + isOk.toString()),
         // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),

@@ -39,6 +39,7 @@ class DropDownNumerical {
   final double? widthSide;
   final double? minValue;
   final double? maxValue;
+  final double? ratioRange;
   final int? decimalPlace;
   final List<double>? valuesList;
 
@@ -86,6 +87,7 @@ class DropDownNumerical {
     this.valuesList,
     this.minValue,
     this.maxValue,
+    this.ratioRange,
     this.decimalPlace = 0,
   }) {
     if (minValue != null && maxValue != null && minValue! > maxValue!) {
@@ -484,15 +486,15 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                   lowRange: double.parse(numericalAvgToText(
                                           widget.dropDownNumerical.valuesList,
                                           widget.decimalPlace!)) -
-                                      double.parse(numericalStandardToText(
+                                      (double.parse(numericalStandardToText(
                                           widget.dropDownNumerical.valuesList,
-                                          2)),
+                                          2))*(widget.dropDownNumerical.ratioRange?? 0)),
                                   hiRange: double.parse(numericalAvgToText(
                                           widget.dropDownNumerical.valuesList,
                                           widget.decimalPlace!)) +
-                                      double.parse(numericalStandardToText(
+                                      (double.parse(numericalStandardToText(
                                           widget.dropDownNumerical.valuesList,
-                                          2)),
+                                          2))*(widget.dropDownNumerical.ratioRange?? 0)),
                                   callBackRemove: (i) {
                                     setState(() {
                                       widget.dropDownNumerical.valuesList!
