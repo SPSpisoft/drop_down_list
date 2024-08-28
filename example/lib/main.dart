@@ -174,129 +174,63 @@ class _AppTextFieldState extends State<AppTextField> {
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
 
-    DropDownNumState(
-      DropDownNumerical(
+
+    DropDownState(
+      DropDown(
         isDismissible: true,
-        valuesList: myList,
-        minValue: 3.0,
-        maxValue: 20.0,
-        decimalPlace: 1,
-        ratioRange: 0,
-        description: "cm",
-        newSetCallBack: (isOk) => print("SPS  " + isOk.toString()),
+        isSearchVisible: false,
         // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
         margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
         fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
         dropDownBackgroundColor: Colors.white,
-        bottomSheetTitle: Container(
-          decoration: const BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(
-                      10),
-                  topRight: Radius.circular(10),),),
-          child: const Padding(
-            padding: EdgeInsets.all(15),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        "title",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Expanded(
-                        child: Text(
-                            "   title 2",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold)),
-                      ),
-                    ],
-                  ),
-                ),
-                // controlWidget
-                // const CtrlDismiss(),
-              ],
+        bottomSheetTitle: const Padding(
+          padding: EdgeInsets.all(15.0),
+          child: Text(
+            kCities,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
             ),
           ),
         ),
-        refreshItems: (listItems) {
-          print("SPS" + listItems.toString());
-        },
+        // showRadioButton: false,
+        // submitButtonChild:  Center(
+        //   child: Text(
+        //     'Done000',
+        //     style: TextStyle(
+        //       fontSize: 16,
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        // ),
         cancelButtonChild: const Text("Cancel", style: TextStyle(color: Colors.white)),
+        data: widget.cities ?? [],
+
+        // listItemBuilder: (index) => InkWell(
+        //   onTap: () {
+        //     last = index;
+        //     FocusScope.of(context).unfocus();
+        //     Navigator.of(context).pop();
+        //   },
+        //     child: Text(widget.cities![index].name , style: TextStyle(color: (index == last) ? Colors.red : Colors.black87))),
+        selectedItems: (List<dynamic> selectedList) {
+          List<String> list = [];
+          for (var item in selectedList) {
+            if (item is SelectedListItem) {
+              list.add(item.name);
+            }
+          }
+          showSnackBar(list.toString());
+        },
         textStyle: const TextStyle(color: Colors.red),
-        noCloseDialog: true,
+        textStyleSelected: const TextStyle(color: Colors.blue),
+        selectedColor: Colors.blue,
+        color: Colors.red,
+        enableMultipleSelection: false,
+        noCloseDialog: false,
         // listItemBuilder: (index) => Text(widget.cities![index].name),
       ),
     ).showModal(context);
-
-    // DropDownState(
-    //   DropDown(
-    //     isDismissible: true,
-    //     isSearchVisible: false,
-    //     // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
-    //     margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
-    //     fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
-    //     dropDownBackgroundColor: Colors.white,
-    //     bottomSheetTitle: const Padding(
-    //       padding: EdgeInsets.all(15.0),
-    //       child: Text(
-    //         kCities,
-    //         style: TextStyle(
-    //           fontWeight: FontWeight.bold,
-    //           fontSize: 20.0,
-    //         ),
-    //       ),
-    //     ),
-    //     // showRadioButton: false,
-    //     // submitButtonChild:  Center(
-    //     //   child: Text(
-    //     //     'Done000',
-    //     //     style: TextStyle(
-    //     //       fontSize: 16,
-    //     //       fontWeight: FontWeight.bold,
-    //     //     ),
-    //     //   ),
-    //     // ),
-    //     cancelButtonChild: const Text("Cancel", style: TextStyle(color: Colors.white)),
-    //     data: widget.cities ?? [],
-    //
-    //     // listItemBuilder: (index) => InkWell(
-    //     //   onTap: () {
-    //     //     last = index;
-    //     //     FocusScope.of(context).unfocus();
-    //     //     Navigator.of(context).pop();
-    //     //   },
-    //     //     child: Text(widget.cities![index].name , style: TextStyle(color: (index == last) ? Colors.red : Colors.black87))),
-    //     selectedItems: (List<dynamic> selectedList) {
-    //       List<String> list = [];
-    //       for (var item in selectedList) {
-    //         if (item is SelectedListItem) {
-    //           list.add(item.name);
-    //         }
-    //       }
-    //       showSnackBar(list.toString());
-    //     },
-    //     textStyle: const TextStyle(color: Colors.red),
-    //     textStyleSelected: const TextStyle(color: Colors.blue),
-    //     selectedColor: Colors.blue,
-    //     color: Colors.red,
-    //     enableMultipleSelection: true,
-    //     noCloseDialog: true,
-    //     // listItemBuilder: (index) => Text(widget.cities![index].name),
-    //   ),
-    // ).showModal(context);
   }
 
   void showSnackBar(String message) {
@@ -344,8 +278,208 @@ class _AppTextFieldState extends State<AppTextField> {
         const SizedBox(
           height: 15.0,
         ),
+
+        TextFormField(
+          // readOnly: true,
+          // showCursor: true,
+          controller: widget.textEditingController,
+          cursorColor: Colors.black,
+          onTap: widget.isCitySelected
+              ? () {
+            FocusScope.of(context).unfocus();
+            onNumerical();
+          }
+              : null,
+          decoration: const InputDecoration(
+            filled: true,
+            fillColor: Colors.black12,
+            contentPadding:
+            EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
+            hintText: "Numerical",
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 0,
+                style: BorderStyle.none,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(8.0),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 15.0,
+        ),
+
+        TextFormField(
+          // readOnly: true,
+          // showCursor: true,
+          controller: widget.textEditingController,
+          cursorColor: Colors.black,
+          onTap: widget.isCitySelected
+              ? () {
+            FocusScope.of(context).unfocus();
+            onCalendar();
+          }
+              : null,
+          decoration: const InputDecoration(
+            filled: true,
+            fillColor: Colors.black12,
+            contentPadding:
+            EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
+            hintText: "Calendar",
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 0,
+                style: BorderStyle.none,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(8.0),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 15.0,
+        ),
       ],
     );
+  }
+
+  void onNumerical() {
+    DropDownNumState(
+      DropDownNumerical(
+        isDismissible: true,
+        valuesList: myList,
+        minValue: 3.0,
+        maxValue: 20.0,
+        decimalPlace: 1,
+        ratioRange: 0,
+        description: "cm",
+        newSetCallBack: (isOk) => print("SPS  " + isOk.toString()),
+        // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
+        fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
+        dropDownBackgroundColor: Colors.white,
+        bottomSheetTitle: Container(
+          decoration: const BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(
+                  10),
+              topRight: Radius.circular(10),),),
+          child: const Padding(
+            padding: EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        "title",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: Text(
+                            "   title 2",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                ),
+                // controlWidget
+                // const CtrlDismiss(),
+              ],
+            ),
+          ),
+        ),
+        refreshItems: (listItems) {
+          print("SPS" + listItems.toString());
+        },
+        cancelButtonChild: const Text("Cancel", style: TextStyle(color: Colors.white)),
+        textStyle: const TextStyle(color: Colors.red),
+        noCloseDialog: true,
+        // listItemBuilder: (index) => Text(widget.cities![index].name),
+      ),
+    ).showModal(context);
+
+  }
+
+  void onCalendar() {
+    DropDownCalendarState(
+      DropDownCalendar(
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now().subtract(const Duration(days: 100000)),
+        lastDate: DateTime.now().add(const Duration(days: 100000)),
+        onDateChanged: (value) {
+          print(">>>>>>>>>>>>" +value.toString());
+        },
+
+        isDismissible: true,
+        // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
+        fromSide: MediaQuery.of(context).orientation == Orientation.landscape,
+        dropDownBackgroundColor: Colors.white,
+        bottomSheetTitle: Container(
+          decoration: const BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(
+                  10),
+              topRight: Radius.circular(10),),),
+          child: const Padding(
+            padding: EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        "title",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: Text(
+                            "   title 2",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                ),
+                // controlWidget
+                // const CtrlDismiss(),
+              ],
+            ),
+          ),
+        ),
+        cancelButtonChild: const Text("Cancel", style: TextStyle(color: Colors.white)),
+        textStyle: const TextStyle(color: Colors.red),
+        noCloseDialog: false,
+
+      ),
+    ).showModal(context);
   }
 }
 

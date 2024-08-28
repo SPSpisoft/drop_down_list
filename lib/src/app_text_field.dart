@@ -4,7 +4,6 @@ import 'drop_down.dart';
 
 /// This is search text field class.
 class AppTextField extends StatefulWidget {
-  final DropDown dropDown;
   final Function(String) onTextChanged;
 
   // [searchHintText] is use to show the hint text into the search widget.
@@ -12,7 +11,6 @@ class AppTextField extends StatefulWidget {
   final String? searchHintText;
 
   const AppTextField({
-    required this.dropDown,
     required this.onTextChanged,
     this.searchHintText,
     Key? key,
