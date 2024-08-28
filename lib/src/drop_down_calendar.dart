@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../model/selected_list_item.dart';
-import 'app_text_field.dart';
-
 typedef ChangeValueCallBack = Function(DateTime selectedItems);
 
 typedef BottomSheetCalListener = bool Function(
     DraggableScrollableNotification draggableScrollableNotification);
 
-class DropDownCalendar {
+class DropDownDate {
   /// The initially selected [DateTime] that the picker should display.
   ///
   /// Subsequently changing this has no effect. To change the selected date,
@@ -89,7 +86,7 @@ class DropDownCalendar {
 
   Widget? inputDescriptionWidget;
 
-  DropDownCalendar({
+  DropDownDate({
     Key? key,
     this.currentDate,
     required this.initialDate,
@@ -124,20 +121,20 @@ class DropDownCalendar {
   });
 }
 
-class DropDownCalendarState {
-  DropDownCalendar dropDownCalendar;
+class DropDownDateState {
+  DropDownDate dropDownDate;
 
-  DropDownCalendarState(this.dropDownCalendar);
+  DropDownDateState(this.dropDownDate);
 
   /// This gives the bottom sheet widget.
   void showModal(context) {
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: dropDownCalendar.fromSide
+      backgroundColor: dropDownDate.fromSide
           ? Colors.transparent
-          : dropDownCalendar.dropDownBackgroundColor,
-      enableDrag: dropDownCalendar.isDismissible,
-      isDismissible: dropDownCalendar.isDismissible,
+          : dropDownDate.dropDownBackgroundColor,
+      enableDrag: dropDownDate.isDismissible,
+      isDismissible: dropDownDate.isDismissible,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
@@ -147,14 +144,14 @@ class DropDownCalendarState {
         return SafeArea(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return dropDownCalendar.fromSide
+              return dropDownDate.fromSide
                   ? Row(
                       // alignment: Alignment.topRight,
                       children: [
                         Expanded(
                             child: InkWell(
                           onTap: () {
-                            if (dropDownCalendar.isDismissible) {
+                            if (dropDownDate.isDismissible) {
                               Navigator.maybePop(context);
                             }
                           },
@@ -163,29 +160,29 @@ class DropDownCalendarState {
                           ),
                         )),
                         Container(
-                          margin: dropDownCalendar.margin,
-                          width: dropDownCalendar.widthSide ??
+                          margin: dropDownDate.margin,
+                          width: dropDownDate.widthSide ??
                               MediaQuery.of(context).size.width / 2,
                           height: double.infinity,
                           decoration: BoxDecoration(
-                            color: dropDownCalendar.dropDownBackgroundColor,
+                            color: dropDownDate.dropDownBackgroundColor,
                             borderRadius: const BorderRadius.horizontal(
                                 left: Radius.circular(15.0)),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: MainBodyCal(
-                                dropDownCalendar: dropDownCalendar,
-                                fromSide: dropDownCalendar.fromSide,
-                                noCloseDialog: dropDownCalendar.noCloseDialog),
+                                dropDownDate: dropDownDate,
+                                fromSide: dropDownDate.fromSide,
+                                noCloseDialog: dropDownDate.noCloseDialog),
                           ),
                         ),
                       ],
                     )
                   : MainBodyCal(
-                      dropDownCalendar: dropDownCalendar,
-                      fromSide: dropDownCalendar.fromSide,
-                      noCloseDialog: dropDownCalendar.noCloseDialog);
+                      dropDownDate: dropDownDate,
+                      fromSide: dropDownDate.fromSide,
+                      noCloseDialog: dropDownDate.noCloseDialog);
             },
           ),
         );
@@ -196,12 +193,12 @@ class DropDownCalendarState {
 
 /// This is main class to display the bottom sheet body.
 class MainBodyCal extends StatefulWidget {
-  final DropDownCalendar dropDownCalendar;
+  final DropDownDate dropDownDate;
   final bool fromSide;
   final bool? noCloseDialog;
 
   const MainBodyCal(
-      {required this.dropDownCalendar,
+      {required this.dropDownDate,
       required this.fromSide,
       this.noCloseDialog = false,
       Key? key})
@@ -233,7 +230,7 @@ class _MainBodyState extends State<MainBodyCal> {
     if (initHeight > maxHeight) initHeight = maxHeight;
 
     return NotificationListener<DraggableScrollableNotification>(
-      onNotification: widget.dropDownCalendar.bottomSheetListener,
+      onNotification: widget.dropDownDate.bottomSheetListener,
       child: DraggableScrollableSheet(
         initialChildSize: initHeight,
         minChildSize: minHeight,
@@ -250,17 +247,17 @@ class _MainBodyState extends State<MainBodyCal> {
                   children: [
                     /// Bottom sheet title text
                     Expanded(
-                        child: widget.dropDownCalendar.bottomSheetTitle ??
+                        child: widget.dropDownDate.bottomSheetTitle ??
                             Container()),
 
                     /// Done button
                     Visibility(
                       visible:
-                          // widget.dropDownCalendar.enableMultipleSelection &&
-                          widget.dropDownCalendar.showDoneOnHeader,
+                          // widget.dropDownDate.enableMultipleSelection &&
+                          widget.dropDownDate.showDoneOnHeader,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: widget.dropDownCalendar.submitButtonChild ??
+                        child: widget.dropDownDate.submitButtonChild ??
                             MaterialButton(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -268,7 +265,7 @@ class _MainBodyState extends State<MainBodyCal> {
                                       color: Colors.transparent, width: 0)),
                               color: Colors.green.shade300,
                               onPressed: () {
-                                // widget.dropDownCalendar.selectedItems
+                                // widget.dropDownDate.selectedItems
                                 //     ?.call(selectedNameList);
                                 // _onUnFocusKeyboardAndPop();
                               },
@@ -283,12 +280,12 @@ class _MainBodyState extends State<MainBodyCal> {
               /// Calendar
 
               CalendarDatePicker(
-                initialDate: widget.dropDownCalendar.initialDate,
+                initialDate: widget.dropDownDate.initialDate,
                 firstDate:
-                widget.dropDownCalendar.firstDate,
-                lastDate: widget.dropDownCalendar.lastDate,
+                widget.dropDownDate.firstDate,
+                lastDate: widget.dropDownDate.lastDate,
                 onDateChanged: (value) {
-                  widget.dropDownCalendar.onDateChanged(value);
+                  widget.dropDownDate.onDateChanged(value);
                   if (!widget.noCloseDialog!) {
                     _onUnFocusKeyboardAndPop();
                   }
@@ -298,27 +295,27 @@ class _MainBodyState extends State<MainBodyCal> {
               /// Controller Button
               Visibility(
                 visible:
-                    // widget.dropDownCalendar.enableMultipleSelection &&
-                    !widget.dropDownCalendar.showDoneOnHeader,
+                    // widget.dropDownDate.enableMultipleSelection &&
+                    !widget.dropDownDate.showDoneOnHeader,
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: widget.dropDownCalendar.buttonPadding ??
+                    padding: widget.dropDownDate.buttonPadding ??
                         const EdgeInsets.only(right: 15, left: 15, top: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       // crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        widget.dropDownCalendar.cancelButtonChild != null
+                        widget.dropDownDate.cancelButtonChild != null
                             ? Expanded(
                                 flex: 1,
-                                child: widget.dropDownCalendar.cancelButtonChild!,
+                                child: widget.dropDownDate.cancelButtonChild!,
                               )
                             : const SizedBox(),
                         Expanded(
-                          flex: widget.dropDownCalendar.submitButtonFlex ?? 2,
-                          child: widget.dropDownCalendar.submitButtonChild ??
+                          flex: widget.dropDownDate.submitButtonFlex ?? 2,
+                          child: widget.dropDownDate.submitButtonChild ??
                               MaterialButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),

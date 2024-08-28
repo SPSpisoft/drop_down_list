@@ -1,3 +1,5 @@
+## 1.5.1
+* calendar -> date
 ## 1.5.0
 * add calendar
 ## 1.4.1
