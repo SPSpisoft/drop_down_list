@@ -1,4 +1,4 @@
-## 1.5.2
+## 1.5.3
 * numerical -> range ctrl edit
 ## 1.5.1
 * calendar -> date
