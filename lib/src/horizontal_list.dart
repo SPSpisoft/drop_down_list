@@ -55,10 +55,11 @@ class ListHorizontalState extends State<ListHorizontal> {
                     ? Colors.red
                     : Colors.green;
 
-                bool v =  index < _items.length - widget.lastList!.length;
+                // bool v =  index < _items.length - widget.lastList!.length;
 
                 bool isNew = widget.lastList == null ||
                     index < _items.length - widget.lastList!.length;
+                //todo : review
                     // ||
                     // (widget.lastList!.length > index && _items[widget.lastList!.length - 1 - index] != widget.lastList![index]);
 

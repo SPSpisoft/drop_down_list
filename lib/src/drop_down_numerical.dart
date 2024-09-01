@@ -653,8 +653,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                           textEditingController.text = text;
                                         });
 
-                                        // widget.dropDownNumerical.refreshItems
-                                        //     ?.call(widget.dropDownNumerical.valuesList);
+                                        widget.dropDownNumerical.refreshItems
+                                            ?.call(widget.dropDownNumerical.valuesList);
                                       }
                                     },
                                     child: Padding(
