@@ -784,7 +784,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     if (valueList != null && valueList.isNotEmpty) {
 
       if(withOutLast){
-        valueList.removeAt(0);
+        valueList.removeLast();
       }
 
       double value =
@@ -812,9 +812,13 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     return ret;
   }
 
-  String numericalStandardToText(List<double>? numbers, int decimal) {
+  String numericalStandardToText(List<double>? numbers, int decimal, {bool withOutLast = true}) {
     String ret = "0";
     if (numbers == null || numbers.isEmpty) return ret;
+
+    if(withOutLast){
+      numbers.removeLast();
+    }
 
     double mean = numbers.reduce((a, b) => a + b) / numbers.length;
 
