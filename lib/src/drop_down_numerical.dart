@@ -255,6 +255,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   List<SelectedListItem> mainList = [];
 
   Color myControlColor = Colors.black87;
+  TextStyle myTextLittleStyle = const TextStyle(fontSize: 10, color: Colors.grey);
   TextStyle myTextStyle = const TextStyle(fontSize: 15, color: Colors.black54);
   TextStyle myTextBoldStyle = const TextStyle(
       fontSize: 20, color: Colors.black54, fontWeight: FontWeight.bold);
@@ -547,26 +548,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                   valuesList: widget
                                       .dropDownNumerical.valuesList.reversed
                                       .toList(),
-                                  lowRange: double.parse(numericalAvgToText(
-                                          widget.dropDownNumerical.valuesList,
-                                          widget.decimalPlace!)) -
-                                      (double.parse(numericalStandardToText(
-                                              widget
-                                                  .dropDownNumerical.valuesList,
-                                              2)) *
-                                          (widget.dropDownNumerical
-                                                  .ratioRange ??
-                                              0)),
-                                  hiRange: double.parse(numericalAvgToText(
-                                          widget.dropDownNumerical.valuesList,
-                                          widget.decimalPlace!)) +
-                                      (double.parse(numericalStandardToText(
-                                              widget
-                                                  .dropDownNumerical.valuesList,
-                                              2)) *
-                                          (widget.dropDownNumerical
-                                                  .ratioRange ??
-                                              0)),
+                                  lowRange: getLowRange(),
+                                  hiRange: getHiRange(),
                                   callBackRemove: (i) {
                                     setState(() {
                                       widget.dropDownNumerical.valuesList
@@ -597,40 +580,61 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.only(
                               right: 12, left: 12, bottom: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    widget.txtAverage ?? "Average : ",
-                                    style: myTextStyle,
-                                  ),
-                                  Text(
-                                    numericalAvgToText(
-                                        widget.dropDownNumerical.valuesList,
-                                        widget.decimalPlace!),
-                                    style: myTextBoldStyle,
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    widget.txtDeviation ?? "St.Deviation : ",
-                                    style: myTextStyle,
-                                  ),
-                                  Text(
-                                    numericalStandardToText(
-                                        widget.dropDownNumerical.valuesList, 2),
-                                    style: myTextBoldStyle,
-                                  )
-                                ],
-                              )
-                            ],
+                          child: Visibility(
+                            visible: widget.dropDownNumerical.valuesList.length >= 2,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      widget.txtAverage ?? "Average : ",
+                                      style: myTextStyle,
+                                    ),
+                                    Text(
+                                      numericalAvgToText(
+                                          widget.dropDownNumerical.valuesList,
+                                          widget.decimalPlace!)?? "",
+                                      style: myTextBoldStyle,
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      widget.txtDeviation ?? "St.Deviation : ",
+                                      style: myTextStyle,
+                                    ),
+                                    Text(
+                                      numericalStandardToText(
+                                          widget.dropDownNumerical.valuesList, 2)?? "",
+                                      style: myTextBoldStyle,
+                                    )
+                                  ],
+                                ),
+                                // const SizedBox(
+                                //   width: 25,
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //     getLowRange() != null ? getLowRange().toString() : "",
+                                //       style: myTextLittleStyle,
+                                //     ),
+                                //     Text(
+                                //       " .. ", style: myTextLittleStyle,
+                                //     ),
+                                //     Text(
+                                //       getHiRange() != null ? getHiRange().toString() : "",
+                                //       style: myTextLittleStyle,
+                                //     )
+                                //   ],
+                                // )
+                              ],
+                            ),
                           ),
                         ),
                         Expanded(
@@ -778,10 +782,14 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
             )));
   }
 
-  String numericalAvgToText(List<double>? valueList, int decimal, {bool withOutLast = true}) {
-    String ret = "0";
+  String? numericalAvgToText(List<double>? valueListInit, int decimal, {bool withOutLast = true}) {
+    String? ret;
 
-    if (valueList != null && valueList.isNotEmpty) {
+    List<double> valueList = [];
+
+    if (valueListInit != null && valueListInit.length > 1) {
+
+      valueList.addAll(valueListInit);
 
       if(withOutLast){
         valueList.removeLast();
@@ -795,7 +803,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
         if (decimal == 0) {
           ret = ret.split(".")[0];
         } else {
-          while (ret.split(".")[1].length < decimal) {
+          while (ret!.split(".")[1].length < decimal) {
             ret = "${ret}0";
           }
           if (ret.split(".")[1].length > decimal) {
@@ -812,9 +820,13 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     return ret;
   }
 
-  String numericalStandardToText(List<double>? numbers, int decimal, {bool withOutLast = true}) {
-    String ret = "0";
-    if (numbers == null || numbers.isEmpty) return ret;
+  String? numericalStandardToText(List<double>? valueListInit, int decimal, {bool withOutLast = true}) {
+    String? ret;
+    List<double> numbers = [];
+
+    if (valueListInit == null || valueListInit.length < 2) return ret;
+
+    numbers.addAll(valueListInit);
 
     if(withOutLast){
       numbers.removeLast();
@@ -832,7 +844,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
       if (decimal == 0) {
         ret = ret.split(".")[0];
       } else {
-        while (ret.split(".")[1].length < decimal) {
+        while (ret!.split(".")[1].length < decimal) {
           ret = "${ret}0";
         }
         if (ret.split(".")[1].length > decimal) {
@@ -852,6 +864,44 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   _onUnFocusKeyboardAndPop() {
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
+  }
+
+  double? getLowRange() {
+    String? avg = numericalAvgToText(
+        widget.dropDownNumerical.valuesList,
+        widget.decimalPlace!);
+    String? st = numericalStandardToText(
+        widget
+            .dropDownNumerical.valuesList,
+        2);
+    if(avg == null || st == null) {
+      return null;
+    } else {
+      return double.parse(avg) -
+        (double.parse(st) *
+            (widget.dropDownNumerical
+                .ratioRange ??
+                0));
+    }
+  }
+
+  double? getHiRange() {
+    String? avg = numericalAvgToText(
+        widget.dropDownNumerical.valuesList,
+        widget.decimalPlace!);
+    String? st = numericalStandardToText(
+        widget
+            .dropDownNumerical.valuesList,
+        2);
+    if (avg == null || st == null) {
+      return null;
+    } else {
+      return double.parse(avg) +
+          (double.parse(st) *
+              (widget.dropDownNumerical
+                  .ratioRange ??
+                  0));
+    }
   }
 
 // Future<void> vibrate(

@@ -51,7 +51,7 @@ class ListHorizontalState extends State<ListHorizontal> {
               scrollDirection: Axis.horizontal,
               initialItemCount: _items.length,
               itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-                Color statusColor = _items[index] < widget.lowRange! || _items[index] > widget.hiRange!
+                Color statusColor = (widget.lowRange != null && _items[index] < widget.lowRange!) || (widget.hiRange != null && _items[index] > widget.hiRange!)
                     ? Colors.red
                     : Colors.green;
 
