@@ -13,11 +13,13 @@ typedef BottomNumSheetListener = bool Function(
 
 typedef ListItemsCallBack = Function(List<double>? listItems);
 typedef NewSetCallBack = Function(double? prndingValue);
+typedef RangeCallBack = Function(bool isOutOfRange);
 
 class DropDownNumerical {
   /// This will give the call back to the selected items from list.
   final ListItemsCallBack? refreshItems;
   final NewSetCallBack? newSetCallBack;
+  final RangeCallBack? rangeCallBack;
 
   final bool showDoneOnHeader;
 
@@ -73,6 +75,7 @@ class DropDownNumerical {
     this.refreshItems,
     this.newSetCallBack,
     this.customTopWidget,
+    this.rangeCallBack,
     this.hintText,
     this.labelText,
     this.description,
@@ -282,6 +285,14 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     BoxShadow(color: Colors.black54, offset: Offset(0, 1))
   ];
 
+  bool outOfRange = false;
+
+
+  set isOutOfRange(bool isOutOfRange) {
+    outOfRange = isOutOfRange;
+    widget.dropDownNumerical.rangeCallBack?.call(outOfRange);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -306,7 +317,6 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     });
   }
 
-  bool isOutOfRange = false;
   TextEditingController textEditingController = TextEditingController();
 
   bool checkRange() {
@@ -487,7 +497,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                                         " )",
                                                     style: TextStyle(
                                                         fontSize: 14,
-                                                        color: isOutOfRange
+                                                        color: outOfRange
                                                             ? Colors.red
                                                             : Colors.grey),
                                                   )
@@ -504,7 +514,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                                           .description!,
                                                       style: TextStyle(
                                                           fontSize: 14,
-                                                          color: isOutOfRange
+                                                          color: outOfRange
                                                               ? Colors.red
                                                               : Colors.grey),
                                                     ),
@@ -632,7 +642,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                     borderRadius: BorderRadius.circular(5),
                                     onTap: () {
                                       // widget.onKeyboardTap(widget.addWidget!.key);
-                                      if (!isOutOfRange && text.isNotEmpty) {
+                                      if (!outOfRange && text.isNotEmpty) {
                                         setState(() {
                                           widget.dropDownNumerical.valuesList
                                               .add(double.parse(text));
@@ -655,7 +665,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                                               width: 1, color: Colors.black12),
                                           borderRadius:
                                               BorderRadius.circular(6),
-                                          color: isOutOfRange || text.isEmpty
+                                          color: outOfRange || text.isEmpty
                                               ? Colors.grey.shade400
                                               : Colors.green.shade300,
                                           boxShadow: myBoxShadowKeys,

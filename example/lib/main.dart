@@ -358,6 +358,7 @@ class _AppTextFieldState extends State<AppTextField> {
         noAcceptMax: true,
         ratioRange: 0,
         description: "cm",
+        rangeCallBack: (isOutOfRange) => print(">>>>>>>>>>>>  " +isOutOfRange.toString()),
         newSetCallBack: (isOk) => print("SPS  " + isOk.toString()),
         // inputDescriptionWidget: Text("(-10 ... +10)", style: TextStyle(fontSize: 14),),
         margin: EdgeInsets.only(top: MediaQuery.of(context).orientation == Orientation.landscape ? 60 : 0),
