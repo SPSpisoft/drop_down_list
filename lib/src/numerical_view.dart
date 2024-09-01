@@ -43,6 +43,7 @@ class NumericKeyboard extends StatefulWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   final List<Widget>? ctrlWidgets;
+  final Widget? addWidget;
   final List<BoxShadow>? boxShadow;
 
   const NumericKeyboard(
@@ -50,6 +51,7 @@ class NumericKeyboard extends StatefulWidget {
       required this.onKeyboardTap,
       this.boxShadow,
       this.ctrlWidgets,
+      this.addWidget,
       this.textStyle,
       this.rightButtonFn,
       this.rightButtonLongPressFn,
@@ -113,6 +115,10 @@ class _NumericKeyboardState extends State<NumericKeyboard> {
       List<Widget> lstCtrl = [];
       for (var e in widget.ctrlWidgets!) {
         lstCtrl.add(Expanded(child: _ctrlButton(e, cons)));
+      }
+
+      if (widget.addWidget != null) {
+        lstCtrl.add(widget.addWidget!);
       }
       return Column(
           mainAxisAlignment: MainAxisAlignment.center, children: lstCtrl);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ListHorizontal extends StatefulWidget {
+  final List<double>? lastList;
   final List<double> valuesList;
   final void Function(int)? callBackRemove;
   final double? lowRange;
@@ -8,6 +9,7 @@ class ListHorizontal extends StatefulWidget {
 
   const ListHorizontal({
     Key? key,
+    required this.lastList,
     required this.valuesList,
     this.lowRange = -double.maxFinite,
     this.hiRange = double.maxFinite,
@@ -53,7 +55,14 @@ class ListHorizontalState extends State<ListHorizontal> {
                     ? Colors.red
                     : Colors.green;
 
-                return _buildItem(_items[index], animation, index, statusColor);
+                bool v =  index < _items.length - widget.lastList!.length;
+
+                bool isNew = widget.lastList == null ||
+                    index < _items.length - widget.lastList!.length;
+                    // ||
+                    // (widget.lastList!.length > index && _items[widget.lastList!.length - 1 - index] != widget.lastList![index]);
+
+                return _buildItem(_items[index], animation, index, statusColor, isNew);
               },
             ),
           ),
@@ -62,7 +71,7 @@ class ListHorizontalState extends State<ListHorizontal> {
     );
   }
 
-  Widget _buildItem(double value, Animation<double> animation, int index, Color statusColor) {
+  Widget _buildItem(double value, Animation<double> animation, int index, Color statusColor, bool isNew) {
     return SizeTransition(
       sizeFactor: animation,
       axis: Axis.horizontal,
@@ -79,7 +88,7 @@ class ListHorizontalState extends State<ListHorizontal> {
             },
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isNew ? Colors.grey.shade300 : Colors.white,
                 border: Border.all(color: statusColor),
                 borderRadius: const BorderRadius.all(Radius.circular(4.0)),
               ),
@@ -115,7 +124,10 @@ class ListHorizontalState extends State<ListHorizontal> {
     double removedItem = _items.removeAt(index);
     _listKey.currentState?.removeItem(
       index,
-          (context, animation) => _buildItem(removedItem, animation, index, Colors.red),
+          (context, animation) {
+            bool isNew = widget.lastList == null || widget.lastList!.length <= index || _items[index] != widget.lastList![index];
+            return _buildItem(removedItem, animation, index, Colors.red, isNew);
+          },
       duration: const Duration(milliseconds: 500),
     );
   }

@@ -1,3 +1,5 @@
+## 1.5.2
+* numerical -> range ctrl edit
 ## 1.5.1
 * calendar -> date
 ## 1.5.0

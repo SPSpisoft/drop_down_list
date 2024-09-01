@@ -350,10 +350,11 @@ class _AppTextFieldState extends State<AppTextField> {
     DropDownNumState(
       DropDownNumerical(
         isDismissible: true,
-        valuesList: myList,
+        valuesListInit: myList,
         minValue: 3.0,
         maxValue: 20.0,
         decimalPlace: 1,
+        noAcceptMax: true,
         ratioRange: 0,
         description: "cm",
         newSetCallBack: (isOk) => print("SPS  " + isOk.toString()),

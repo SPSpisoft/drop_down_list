@@ -1,6 +1,6 @@
 name: sps_drop_down_list
 description: Customized drop_down_list (A drop down list with single and multiple selection that will work with search.)
-version: 1.5.1
+version: 1.5.2
 repository: https://github.com/SPSpisoft/sps_drop_down_list
 issue_tracker: https://github.com/SPSpisoft/sps_drop_down_list/issues
 
@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
 
   mediaquery_sizer: ^1.1.0
+  vibration: ^1.8.1
 
 dev_dependencies:
   flutter_test:

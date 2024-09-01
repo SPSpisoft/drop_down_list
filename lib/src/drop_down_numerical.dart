@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -30,6 +29,12 @@ class DropDownNumerical {
   final String? labelText;
   final String? hintText;
 
+  final String? txtAverage;
+  final String? txtDeviation;
+  final String? txtAdd;
+  final bool noAcceptMax;
+  final bool vibrateOnOutRange;
+
   /// [isDismissible] Specifies whether the bottom sheet will be dismissed when user taps on the scrim.
   /// If true, the bottom sheet will be dismissed when user taps on the scrim.
   /// by default it is [True].
@@ -41,7 +46,7 @@ class DropDownNumerical {
   final double? maxValue;
   final double? ratioRange;
   final int? decimalPlace;
-  final List<double>? valuesList;
+  final List<double>? valuesListInit;
 
   final TextStyle? textStyle;
 
@@ -61,6 +66,8 @@ class DropDownNumerical {
 
   Widget? inputDescriptionWidget;
 
+  List<double> valuesList = [];
+
   DropDownNumerical({
     Key? key,
     this.refreshItems,
@@ -69,6 +76,11 @@ class DropDownNumerical {
     this.hintText,
     this.labelText,
     this.description,
+    this.txtAverage,
+    this.txtDeviation,
+    this.txtAdd,
+    this.vibrateOnOutRange = true,
+    this.noAcceptMax = true,
     this.inputDescriptionWidget,
     this.showDoneOnHeader = false,
     this.isDismissible = true,
@@ -84,7 +96,7 @@ class DropDownNumerical {
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetTitle,
     this.buttonPadding,
-    this.valuesList,
+    this.valuesListInit,
     this.minValue,
     this.maxValue,
     this.ratioRange,
@@ -96,9 +108,13 @@ class DropDownNumerical {
 
     if (minValue != null &&
         maxValue != null &&
-        valuesList != null &&
-        valuesList!.any((v) => v > maxValue! || v < minValue!)) {
+        valuesListInit != null &&
+        valuesListInit!.any((v) => v > maxValue! || v < minValue!)) {
       throw ArgumentError('any or more value (in valuesList) is out of range');
+    }
+
+    if (valuesListInit != null) {
+      valuesList.addAll(valuesListInit!);
     }
   }
 // : assert(minValue == null || maxValue == null || minValue < maxValue, 'min must be smaller than max');
@@ -160,6 +176,12 @@ class DropDownNumState {
                                   maxValue: dropDownNumerical.maxValue,
                                   minValue: dropDownNumerical.minValue,
                                   decimalPlace: dropDownNumerical.decimalPlace,
+                                  txtAverage: dropDownNumerical.txtAverage,
+                                  txtDeviation: dropDownNumerical.txtDeviation,
+                                  txtAdd: dropDownNumerical.txtAdd,
+                                  noAcceptMax: dropDownNumerical.noAcceptMax,
+                                  vibrateOnOutRange:
+                                      dropDownNumerical.vibrateOnOutRange,
                                   noCloseDialog:
                                       dropDownNumerical.noCloseDialog)),
                         ),
@@ -171,6 +193,9 @@ class DropDownNumState {
                       maxValue: dropDownNumerical.maxValue,
                       minValue: dropDownNumerical.minValue,
                       decimalPlace: dropDownNumerical.decimalPlace,
+                      txtAverage: dropDownNumerical.txtAverage,
+                      txtDeviation: dropDownNumerical.txtDeviation,
+                      txtAdd: dropDownNumerical.txtAdd,
                       noCloseDialog: dropDownNumerical.noCloseDialog);
             },
           ),
@@ -187,6 +212,7 @@ class NumPadBody extends StatefulWidget {
   final bool fromSide;
   final String? txtAverage;
   final String? txtDeviation;
+  final String? txtAdd;
   final bool? noCloseDialog;
   final Widget? header;
   final Widget? descriptionWidget;
@@ -195,15 +221,20 @@ class NumPadBody extends StatefulWidget {
   final double? minValue;
   final double? maxValue;
   final int? decimalPlace;
+  final bool vibrateOnOutRange;
+  final bool noAcceptMax;
 
   const NumPadBody(
       {required this.dropDownNumerical,
       required this.fromSide,
       this.txtAverage,
       this.txtDeviation,
+      this.txtAdd,
       this.header,
       this.minValue,
       this.maxValue,
+      this.vibrateOnOutRange = true,
+      this.noAcceptMax = true,
       this.decimalPlace = 0,
       this.descriptionWidget,
       this.currentValueDecoration,
@@ -233,6 +264,8 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
   List<Widget> myCtrlWidgets = [];
 
+  // Widget? myAddWidgets;
+
   GlobalKey gKeyDel = GlobalKey();
   GlobalKey gKeyAdd = GlobalKey();
 
@@ -245,6 +278,10 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   final GlobalKey<ListHorizontalState> _listHorizontalKey =
       GlobalKey<ListHorizontalState>();
 
+  var myBoxShadowKeys = const [
+    BoxShadow(color: Colors.black54, offset: Offset(0, 1))
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -253,8 +290,12 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
     myCtrlWidgets
         .add(Icon(Icons.backspace_outlined, color: Colors.grey, key: gKeyDel));
-    myCtrlWidgets.add(Text("ADD",
-        style: const TextStyle(color: Colors.blueAccent), key: gKeyAdd));
+
+    // myAddWidgets = ;
+
+    // Text(widget.txtDeviation?? "ADD",
+    // style: TextStyle(color: isOutOfRange ? Colors.grey : Colors.green),
+    // key: gKeyAdd);
     // _setSearchWidgetListener();
 
     horizontalListAnimationController = AnimationController(
@@ -268,33 +309,44 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
   bool isOutOfRange = false;
   TextEditingController textEditingController = TextEditingController();
 
+  bool checkRange() {
+    return double.parse(text) <= (widget.maxValue ?? double.maxFinite) &&
+        (double.parse(text) >= (widget.minValue ?? -double.maxFinite));
+  }
+
   onKeyboardTap(Object? value) {
     setState(() {
       if (value is String) {
-        if (double.parse(text + value) <=
-                (widget.maxValue ?? double.maxFinite) &&
-            ((text.isNotEmpty &&
-                    text.substring(0, 1) == '-' &&
-                    double.parse(text + value) >=
-                        (widget.minValue ?? -double.maxFinite)) ||
-                (text.isEmpty || text.substring(0, 1) != '-'))) {
+        text = text + value;
+        if (checkRange()) {
           // widget.callBack(null, true);
           isOutOfRange = false;
           // text = text + value;
 
           if (text.contains(".") &&
               text.split(".")[1].length >= widget.decimalPlace!) return;
-          text = text + value;
         } else {
-          // widget.callBack(null, false);
-          isOutOfRange = true;
+          if (widget.noAcceptMax &&
+              double.parse(text) > (widget.maxValue ?? double.maxFinite)) {
+            text = text.substring(0, text.length - 1);
+            // vibrate(mPattern: [0, 50, 200, 100]);
+          } else {
+            // widget.callBack(null, false);
+            isOutOfRange = true;
+          }
         }
       } else if (value == gKeyDel) {
-        if (text.isEmpty) return;
-        setState(() {
-          text = text.substring(0, text.length - 1);
-          isOutOfRange = false;
-        });
+        if (text.isNotEmpty) {
+          setState(() {
+            text = text.substring(0, text.length - 1);
+
+            if (text.isEmpty) {
+              isOutOfRange = false;
+            } else {
+              isOutOfRange = !checkRange();
+            }
+          });
+        }
       } else if (value == gKeyAdd) {
         if (text.isNotEmpty) {
           if ((widget.minValue != null &&
@@ -303,7 +355,7 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                   double.parse(text) > widget.maxValue!)) {
             isOutOfRange = true;
           } else {
-            widget.dropDownNumerical.valuesList!.add(double.parse(text));
+            widget.dropDownNumerical.valuesList.add(double.parse(text));
             _listHorizontalKey.currentState?.addItem(double.parse(text));
             isOutOfRange = false;
             text = "";
@@ -476,30 +528,40 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
 
                         widget.dropDownNumerical.customTopWidget ??
                             const SizedBox(),
-                        widget.dropDownNumerical.valuesList != null
+                        widget.dropDownNumerical.valuesList.isNotEmpty
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: ListHorizontal(
+                                  lastList:
+                                      widget.dropDownNumerical.valuesListInit,
                                   valuesList: widget
-                                      .dropDownNumerical.valuesList!.reversed
+                                      .dropDownNumerical.valuesList.reversed
                                       .toList(),
                                   lowRange: double.parse(numericalAvgToText(
                                           widget.dropDownNumerical.valuesList,
                                           widget.decimalPlace!)) -
                                       (double.parse(numericalStandardToText(
-                                          widget.dropDownNumerical.valuesList,
-                                          2))*(widget.dropDownNumerical.ratioRange?? 0)),
+                                              widget
+                                                  .dropDownNumerical.valuesList,
+                                              2)) *
+                                          (widget.dropDownNumerical
+                                                  .ratioRange ??
+                                              0)),
                                   hiRange: double.parse(numericalAvgToText(
                                           widget.dropDownNumerical.valuesList,
                                           widget.decimalPlace!)) +
                                       (double.parse(numericalStandardToText(
-                                          widget.dropDownNumerical.valuesList,
-                                          2))*(widget.dropDownNumerical.ratioRange?? 0)),
+                                              widget
+                                                  .dropDownNumerical.valuesList,
+                                              2)) *
+                                          (widget.dropDownNumerical
+                                                  .ratioRange ??
+                                              0)),
                                   callBackRemove: (i) {
                                     setState(() {
-                                      widget.dropDownNumerical.valuesList!
+                                      widget.dropDownNumerical.valuesList
                                           .removeAt(widget.dropDownNumerical
-                                                  .valuesList!.length -
+                                                  .valuesList.length -
                                               1 -
                                               i);
 
@@ -565,10 +627,51 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
                           child: NumericKeyboard(
                             onKeyboardTap: onKeyboardTap,
                             ctrlWidgets: myCtrlWidgets,
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Colors.black54, offset: Offset(0, 1))
-                            ],
+                            addWidget: Expanded(
+                                child: InkWell(
+                                    borderRadius: BorderRadius.circular(5),
+                                    onTap: () {
+                                      // widget.onKeyboardTap(widget.addWidget!.key);
+                                      if (!isOutOfRange && text.isNotEmpty) {
+                                        setState(() {
+                                          widget.dropDownNumerical.valuesList
+                                              .add(double.parse(text));
+                                          _listHorizontalKey.currentState
+                                              ?.addItem(double.parse(text));
+                                          isOutOfRange = true;
+                                          text = "";
+                                          textEditingController.text = text;
+                                        });
+
+                                        // widget.dropDownNumerical.refreshItems
+                                        //     ?.call(widget.dropDownNumerical.valuesList);
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1, color: Colors.black12),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                          color: isOutOfRange || text.isEmpty
+                                              ? Colors.grey.shade400
+                                              : Colors.green.shade300,
+                                          boxShadow: myBoxShadowKeys,
+                                        ),
+                                        alignment: Alignment.center,
+                                        // height: double.infinity,
+                                        // width: widget.sizeNumButton ?? 22.parentW(cons),
+                                        // height: widget.sizeNumButton ?? 70,
+                                        child: Text(
+                                            widget.txtDeviation ?? "ADD",
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                            key: gKeyAdd),
+                                      ),
+                                    ))),
+                            boxShadow: myBoxShadowKeys,
                             leftIcon: const Center(
                               child: Text("-/+",
                                   style: TextStyle(
@@ -730,4 +833,26 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
   }
+
+// Future<void> vibrate(
+//     {int mDuration = 1000,
+//     int mRepeat = 0,
+//     int mAmplitude = 0,
+//     List<int> mIntensities = const [],
+//     List<int> mPattern = const []}) async {
+//   await Vibration.hasCustomVibrationsSupport()
+//       .then((hasVibrationsSupport) async {
+//     if (hasVibrationsSupport ?? false) {
+//       Vibration.vibrate(
+//           duration: mDuration,
+//           amplitude: mAmplitude,
+//           intensities: mIntensities,
+//           pattern: mPattern);
+//     } else {
+//       Vibration.vibrate();
+//       await Future.delayed(Duration(milliseconds: mDuration));
+//       Vibration.vibrate();
+//     }
+//   });
+// }
 }
