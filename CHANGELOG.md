@@ -1,4 +1,6 @@
 ## 1.5.4
+* numerical -> range ctrl edit 3
+## 1.5.4
 * numerical -> range ctrl edit 2
 ## 1.5.3
 * numerical -> range ctrl edit
