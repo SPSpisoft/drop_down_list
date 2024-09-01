@@ -126,8 +126,8 @@ class ListHorizontalState extends State<ListHorizontal> {
     _listKey.currentState?.removeItem(
       index,
           (context, animation) {
-            bool isNew = widget.lastList == null || widget.lastList!.length <= index || _items[index] != widget.lastList![index];
-            return _buildItem(removedItem, animation, index, Colors.red, isNew);
+            // bool isNew = widget.lastList == null || widget.lastList!.length <= index || _items[index] != widget.lastList![index];
+            return _buildItem(removedItem, animation, index, Colors.red, false);
           },
       duration: const Duration(milliseconds: 500),
     );

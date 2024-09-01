@@ -1,3 +1,5 @@
+## 1.5.6
+* numerical -> debug
 ## 1.5.4
 * numerical -> range ctrl edit 3
 ## 1.5.4
