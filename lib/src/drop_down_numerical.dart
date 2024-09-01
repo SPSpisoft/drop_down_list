@@ -778,9 +778,15 @@ class _NumPadBodyState extends State<NumPadBody> with TickerProviderStateMixin {
             )));
   }
 
-  String numericalAvgToText(List<double>? valueList, int decimal) {
+  String numericalAvgToText(List<double>? valueList, int decimal, {bool withOutLast = true}) {
     String ret = "0";
+
     if (valueList != null && valueList.isNotEmpty) {
+
+      if(withOutLast){
+        valueList.removeAt(0);
+      }
+
       double value =
           valueList.map((m) => m).reduce((a, b) => a + b).toPrecision(decimal) /
               valueList.length;

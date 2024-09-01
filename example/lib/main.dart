@@ -356,7 +356,7 @@ class _AppTextFieldState extends State<AppTextField> {
         maxValue: 20.0,
         decimalPlace: 1,
         noAcceptMax: true,
-        ratioRange: 0,
+        ratioRange: 2,
         description: "cm",
         rangeCallBack: (isOutOfRange) => print(">>>>>>>>>>>>  " +isOutOfRange.toString()),
         newSetCallBack: (isOk) => print("SPS  " + isOk.toString()),
